@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.scanoss.plugins.sonar</groupId>
+  <artifactId>scanoss-sonar-plugin</artifactId>
+  <packaging>sonar-plugin</packaging>
+  <version>0.1.0</version>
+
+  <name>SCANOSS Example Plugin for SonarQube 10.x</name>
+  <description>SCANOSS Example of Plugin for SonarQube</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <sonar.apiVersion>9.8.0.203</sonar.apiVersion>
+    <sonar.testingHarnessVersion>9.5.0.56709</sonar.testingHarnessVersion>
+    <jdk.min.version>17</jdk.min.version>
+    <sonar.sources>src/main/java,src/main/js</sonar.sources>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.sonarsource.api.plugin</groupId>
+      <artifactId>sonar-plugin-api</artifactId>
+      <version>${sonar.apiVersion}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <!-- packaged with the plugin -->
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.6</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.10.1</version>
+    </dependency>
+
+    <!-- unit tests -->
+    <dependency>
+      <groupId>org.sonarsource.sonarqube</groupId>
+      <artifactId>sonar-testing-harness</artifactId>
+      <version>${sonar.testingHarnessVersion}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.sonarsource.sonar-packaging-maven-plugin</groupId>
+        <artifactId>sonar-packaging-maven-plugin</artifactId>
+        <version>1.21.0.505</version>
+        <extensions>true</extensions>
+        <configuration>
+          <pluginKey>scanoss</pluginKey>
+          <pluginClass>com.scanoss.plugins.sonar.ScanOSSPlugin</pluginClass>
+          <sonarQubeMinVersion>9.5</sonarQubeMinVersion>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.10.1</version>
+        <configuration>
+          <release>11</release>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>
