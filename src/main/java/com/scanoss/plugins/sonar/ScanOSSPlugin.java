@@ -28,6 +28,4 @@ public class ScanOSSPlugin implements Plugin {
         context.addExtension(ComputeScanossScoreAverage.class);
     }
 
-
-
 }

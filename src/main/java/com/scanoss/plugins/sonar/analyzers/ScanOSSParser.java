@@ -12,6 +12,7 @@ import java.util.Map;
 public class ScanOSSParser {
 
     private static final org.sonar.api.utils.log.Logger LOGGER = Loggers.get(ScanOSSParser.class);
+
     public static Map<String,List<ScanData>> parseScanResult(String result){
 
         Gson gson = new Gson();

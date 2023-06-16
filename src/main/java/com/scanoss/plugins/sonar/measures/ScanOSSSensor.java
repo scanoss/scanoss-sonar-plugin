@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.Gson;
 import com.scanoss.plugins.sonar.analyzers.AnalyzerException;
 import com.scanoss.plugins.sonar.analyzers.ScanOSSAnalyzer;
 import com.scanoss.plugins.sonar.measures.ScanOSSMetrics;
@@ -74,8 +75,13 @@ public class ScanOSSSensor implements Sensor {
         try {
             projectInfo = analyzer.analyze();
 
+            if (projectInfo == null) {
+                log.error("[SCANOSS] Output is unavailable. Aborting...");
+                return;
+            }
             log.info("[SCANOSS] Analysis done");
-            log.debug("this is what we've found: " + projectInfo);
+            Gson gson = new Gson();
+            log.debug("this is what we've found: " + gson.toJson(projectInfo));
 
             // Process all SCANOSS results
             Map<String, List<ScanData>> files = projectInfo.getFiles();
@@ -100,11 +106,10 @@ public class ScanOSSSensor implements Sensor {
                 saveLicenses(sensorContext, file, fileScanResult);
                 saveQualityData(sensorContext, file, fileScanResult);
                 saveVulnerabilities(sensorContext, file, fileScanResult);
-
             }
 
         } catch (AnalyzerException ae) {
-            log.error("[SCANOSS] Error while running EclipseAnalyzer", ae);
+            log.error("[SCANOSS] Error while running ScanOSSAnalyzer", ae);
         }
     }
 
