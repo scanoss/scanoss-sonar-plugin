@@ -108,8 +108,8 @@ public class ScanOSSSensor implements Sensor {
                 saveVulnerabilities(sensorContext, file, fileScanResult);
             }
 
-        } catch (AnalyzerException ae) {
-            log.error("[SCANOSS] Error while running ScanOSSAnalyzer", ae);
+        } catch (Exception e) {
+            log.error("[SCANOSS] Error while running ScanOSS Sensor", e);
         }
     }
 
