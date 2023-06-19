@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.google.gson.Gson;
 import com.scanoss.plugins.sonar.analyzers.AnalyzerException;
@@ -67,9 +68,11 @@ public class ScanOSSSensor implements Sensor {
 
         log.info("[SCANOSS] Analysing project root: " + rootDir.getAbsolutePath());
 
-        String url = config.get(ScanOSSProperties.SCANOSS_API_URL_KEY).get();
-        String token = config.get(ScanOSSProperties.SCANOSS_API_TOKEN_KEY).get();
-        ScanOSSAnalyzer analyzer = new ScanOSSAnalyzer(rootDir, url, token);
+        String url = getConfigValue(ScanOSSProperties.SCANOSS_API_URL_KEY);
+        String token = getConfigValue(ScanOSSProperties.SCANOSS_API_TOKEN_KEY);
+        String containerImage = getConfigValue(ScanOSSProperties.SCANOSS_DOCKER_IMAGE_KEY);
+
+        ScanOSSAnalyzer analyzer = new ScanOSSAnalyzer(rootDir, url, token, containerImage);
         ScanResult projectInfo;
 
         try {
@@ -166,6 +169,16 @@ public class ScanOSSSensor implements Sensor {
                 .withValue(vulnerabilityCount)
                 .save();
     }
+
+    private String getConfigValue(String key){
+        String value = "";
+        Optional<String> optToken = config.get(key);
+        if (optToken.isPresent()) {
+            value = optToken.get();
+        }
+        return value;
+    }
+
     /**
      * Returns the name of the sensor as it will be used in logs during analysis.
      *

@@ -12,10 +12,19 @@ import java.util.List;
 public class ScanOSSScanner {
 
     private static final Logger LOGGER = Loggers.get(ScanOSSScanner.class);
+    private String command = "scanoss-py";
+    private Boolean useDocker = false;
 
-    public static String runScan(String path, String url, String key) throws RuntimeException {
+    public ScanOSSScanner(String containerImage){
+        if(containerImage != null && !containerImage.isEmpty()){
+            this.command = "docker run --rm -v %:/app -w /app " + containerImage;
+            this.useDocker = true;
+        }
+    }
+
+    public String runScan(String path, String url, String key) throws RuntimeException {
         LOGGER.info("[SCANOSS] Scanning path " + path + "...");
-        ProcessBuilder processBuilder = new ProcessBuilder("scanoss-py", "scan", "--apiurl", url, "--key", key, path);
+        ProcessBuilder processBuilder = createProcessBuilder(path, url, key);
         processBuilder.redirectErrorStream(true);
         Process process = null;
         String output = null;
@@ -34,7 +43,7 @@ public class ScanOSSScanner {
             int exitCode = process.waitFor();
             output = String.join("", results);
             LOGGER.info("[SCANOSS] Exit code: " + String.valueOf(exitCode));
-            LOGGER.info(output);
+            LOGGER.debug(output);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
@@ -42,6 +51,31 @@ public class ScanOSSScanner {
         }
 
         return output;
+    }
+
+    private ProcessBuilder createProcessBuilder(String path, String url, String key){
+        List<String> pbCommand = new ArrayList<String>();
+        String command = this.command;
+        if (this.useDocker) {
+            command = command.replace("%", path);
+            path = ".";
+        }
+        pbCommand.addAll(Arrays.asList(command.split(" ")));
+        pbCommand.add("scan");
+
+        if (url != null && !url.isEmpty()) {
+            pbCommand.add("--apiurl");
+            pbCommand.add(url);
+        }
+
+        if (key != null && !key.isEmpty()) {
+            pbCommand.add("--key");
+            pbCommand.add(key);
+        }
+
+        pbCommand.add(path);
+
+        return new ProcessBuilder(pbCommand);
     }
 
     private static List<String> readProcessOutput(InputStream inputStream) {
