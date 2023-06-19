@@ -27,21 +27,28 @@ public class ScanOSSAnalyzer {
     private final String key;
 
     /**
+     * The Docker Container Image
+     */
+    private final String containerImage;
+
+    /**
      * The logger.
      */
     private final Logger log = Loggers.get(this.getClass());
 
-    public ScanOSSAnalyzer(final File rootDir, String url, String key) {
+    public ScanOSSAnalyzer(final File rootDir, String url, String key, String containerImage) {
         super();
         this.rootDir = rootDir;
         this.url = url;
         this.key = key;
+        this.containerImage = containerImage;
     }
 
     public ScanResult analyze()  {
         log.info("[SCANOSS] Starting scan process...");
         ScanResult scanResult = new ScanResult();
-        String output = ScanOSSScanner.runScan(rootDir.getPath(), this.url, this.key);
+        ScanOSSScanner scanner = new ScanOSSScanner(this.containerImage);
+        String output = scanner.runScan(rootDir.getPath(), this.url, this.key);
         if(output == null || output.isEmpty()){
             return null;
         }
