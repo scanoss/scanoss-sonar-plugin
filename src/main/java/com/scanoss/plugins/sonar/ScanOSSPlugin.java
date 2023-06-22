@@ -24,6 +24,7 @@ public class ScanOSSPlugin implements Plugin {
         context.addExtension(ScanOSSMetrics.class);
         context.addExtension(ScanOSSSensor.class);
         context.addExtension(ComputeCopyleftCount.class);
+        context.addExtension(ComputeCopyrightCount.class);
         context.addExtension(ComputeVulnerabilityCount.class);
         context.addExtension(ComputeScanossScoreAverage.class);
     }

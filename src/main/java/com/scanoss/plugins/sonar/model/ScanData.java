@@ -9,6 +9,7 @@ public class ScanData {
     private String id;
     private List<QualityAttribute> quality;
     private List<LicenseInfo> licenses;
+    private List<CopyrightInfo> copyrights;
     private List<VulnerabilityInfo> vulnerabilities;
     private String file;
     private String file_hash;
@@ -36,6 +37,14 @@ public class ScanData {
 
     public void setLicenses(List<LicenseInfo> licenses) {
         this.licenses = licenses;
+    }
+
+    public List<CopyrightInfo> getCopyrights() {
+        return copyrights;
+    }
+
+    public void setCopyrights(List<CopyrightInfo> copyrights) {
+        this.copyrights = copyrights;
     }
 
     public List<VulnerabilityInfo> getVulnerabilities() {

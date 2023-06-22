@@ -37,6 +37,13 @@ public class ScanOSSMetrics implements Metrics {
             .setDomain(DOMAIN_SCANOSS)
             .create();
 
+    public static final Metric<Integer> COPYRIGHT_COUNT = new Metric.Builder("copyright_count", "Copyright Declarations Count", Metric.ValueType.INT)
+            .setDescription("This metric counts the number of Copyright declarations found by SCANOSS")
+            .setDirection(Metric.DIRECTION_WORST)
+            .setQualitative(false)
+            .setDomain(DOMAIN_SCANOSS)
+            .create();
+
     /**
      * Defines the plugin metrics.
      *
@@ -44,6 +51,6 @@ public class ScanOSSMetrics implements Metrics {
      */
     public List<Metric> getMetrics() {
         return Arrays.asList(
-                COPYLEFT_LICENSE_COUNT, VULNERABILITY_COUNT, SCANOSS_QUALITY_SCORE);
+                COPYLEFT_LICENSE_COUNT, COPYRIGHT_COUNT, VULNERABILITY_COUNT, SCANOSS_QUALITY_SCORE);
     }
 }

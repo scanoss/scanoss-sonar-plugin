@@ -7,9 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.google.gson.Gson;
-import com.scanoss.plugins.sonar.analyzers.AnalyzerException;
 import com.scanoss.plugins.sonar.analyzers.ScanOSSAnalyzer;
-import com.scanoss.plugins.sonar.measures.ScanOSSMetrics;
 import com.scanoss.plugins.sonar.model.*;
 import com.scanoss.plugins.sonar.settings.ScanOSSProperties;
 import org.sonar.api.batch.fs.InputFile;
@@ -107,6 +105,7 @@ public class ScanOSSSensor implements Sensor {
                 log.info("[SCANOSS] Saving measures for file " + file.filename());
                 ScanData fileScanResult = scanDataList.get(0);
                 saveLicenses(sensorContext, file, fileScanResult);
+                saveCopyrights(sensorContext, file, fileScanResult);
                 saveQualityData(sensorContext, file, fileScanResult);
                 saveVulnerabilities(sensorContext, file, fileScanResult);
             }
@@ -114,6 +113,25 @@ public class ScanOSSSensor implements Sensor {
         } catch (Exception e) {
             log.error("[SCANOSS] Error while running ScanOSS Sensor", e);
         }
+    }
+
+    private void saveCopyrights(SensorContext sensorContext, InputFile file, ScanData scanData) {
+        List<CopyrightInfo> copyrights = scanData.getCopyrights();
+
+        if (copyrights == null) {
+            log.debug("[SCANOSS] No copyrights entry found for: " + file.filename());
+            return;
+        }
+
+        // The copyrights metric equals to 1 if at least 1 copyright declaration is found. Otherwise it is 0.
+        int metricValueForFile =  copyrights.size() > 0 ? 1 : 0;
+
+        log.info("[SCANOSS] Any Copyright declarations found for file '"+file.filename()+"': "+ (metricValueForFile>0? "yes":"no"));
+        sensorContext.<Integer>newMeasure()
+                .forMetric(ScanOSSMetrics.COPYRIGHT_COUNT)
+                .on(file)
+                .withValue(metricValueForFile)
+                .save();
     }
 
     private void saveQualityData(SensorContext sensorContext, InputFile file, ScanData fileScanResult) {
