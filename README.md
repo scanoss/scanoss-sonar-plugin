@@ -9,10 +9,11 @@ Back-end
 Example SonarQube Plugin leveraging the SCANOSS Python CLI to perform scans. The following metrics are reported to SonarQube:
 
 * Copyleft License Count
+* Copyright Declarations Count
 * Vulnerability Count
 * Quality Score
 
-Some of the example information may require a SCANOSS Premium subscription. 
+NOTE: Some of the example information may require a SCANOSS Premium subscription. 
 
 ### Building
 
