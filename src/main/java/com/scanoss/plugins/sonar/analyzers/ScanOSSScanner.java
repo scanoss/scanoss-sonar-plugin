@@ -1,6 +1,7 @@
 package com.scanoss.plugins.sonar.analyzers;
 
 
+import com.scanoss.Scanner;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 
@@ -9,100 +10,42 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * SCANOSS Scanner
+ * <p>
+ * Performs the scan of files using the scanoss.java library
+ * </p>
+ */
 public class ScanOSSScanner {
 
+    /**
+     * The logger.
+     */
     private static final Logger LOGGER = Loggers.get(ScanOSSScanner.class);
-    private String command = "scanoss-py";
-    private Boolean useDocker = false;
 
-    public ScanOSSScanner(String containerImage){
-        if(containerImage != null && !containerImage.isEmpty()){
-            this.command = "docker run --rm -v %:/app -w /app " + containerImage;
-            this.useDocker = true;
-        }
+    /**
+     * Private constructor to allow only statics
+     */
+    private ScanOSSScanner() {
+        // only statics
     }
 
-    public String runScan(String path, String url, String key) throws RuntimeException {
+    /**
+     * Scan files in the given path against the given API endpoint url
+     * @param path folder to scan
+     * @param url Scan API endpoint
+     * @param key Scan API access token (optional)
+     * @return Scan result (in JSON format)
+     * @throws RuntimeException Scanning went wrong
+     */
+    public static List<String> runScan(String path, String url, String key) throws RuntimeException {
         LOGGER.info("[SCANOSS] Scanning path " + path + "...");
-        ProcessBuilder processBuilder = createProcessBuilder(path, url, key);
-        processBuilder.redirectErrorStream(true);
-        Process process = null;
-        String output = null;
-        try {
-            process = processBuilder.start();
-            List<String> processOutput = readProcessOutput(process.getInputStream());
-            LOGGER.debug("[SCANOSS] " + Arrays.toString(processOutput.toArray()));
-            int jsonStartPosition = processOutput.indexOf("{");
-            List<String> results;
-            if(jsonStartPosition < 0) {
-                results = processOutput;
-                LOGGER.error("[SCANOSS] " + String.join("",results));
-                return null;
-            }
-            results = processOutput.subList(jsonStartPosition, processOutput.size());
-            int exitCode = process.waitFor();
-            output = String.join("", results);
-            LOGGER.info("[SCANOSS] Exit code: " + String.valueOf(exitCode));
-            LOGGER.debug(output);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
+        Scanner scanner = Scanner.builder().url(url).apiKey(key).build();
+        List<String> output = scanner.scanFolder(path);
+        LOGGER.info("[SCANOSS] Scan finished");
+        LOGGER.debug("[SCANOSS] " + Arrays.toString(output.toArray()));
         return output;
-    }
 
-    private ProcessBuilder createProcessBuilder(String path, String url, String key){
-        List<String> pbCommand = new ArrayList<String>();
-        String command = this.command;
-        if (this.useDocker) {
-            command = command.replace("%", path);
-            path = ".";
-        }
-        pbCommand.addAll(Arrays.asList(command.split(" ")));
-        pbCommand.add("scan");
-
-        if (url != null && !url.isEmpty()) {
-            pbCommand.add("--apiurl");
-            pbCommand.add(url);
-        }
-
-        if (key != null && !key.isEmpty()) {
-            pbCommand.add("--key");
-            pbCommand.add(key);
-        }
-
-        pbCommand.add(path);
-
-        return new ProcessBuilder(pbCommand);
-    }
-
-    private static List<String> readProcessOutput(InputStream inputStream) {
-        List<String> outputLines = new ArrayList<>();
-        BufferedReader reader = null;
-
-        try {
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                outputLines.add(line);
-            }
-        } catch (IOException e) {
-            // Handle any exceptions that may occur during reading
-            e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    // Handle any exceptions that may occur during closing the reader
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return outputLines;
     }
 
 }
