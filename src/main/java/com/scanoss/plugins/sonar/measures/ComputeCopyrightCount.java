@@ -6,8 +6,27 @@ import org.sonar.api.ce.measure.MeasureComputer;
 
 import static com.scanoss.plugins.sonar.measures.ScanOSSMetrics.COPYRIGHT_COUNT;
 
+/**
+ * Compute Copyright Count
+ * <p>
+ * Computes the Copyright Count Measure. A file is marked as copyrighted if
+ * at least one copyright declaration is found in any file matches
+ * </p>
+ */
 public class ComputeCopyrightCount implements MeasureComputer {
 
+  /**
+   * Creates a Copyright Measure Computer
+   */
+  public ComputeCopyrightCount(){
+    super();
+  }
+
+  /**
+   * Defines Copyrights measure
+   * @param def Sonar Definition Context
+   * @return new Definition
+   */
   @Override
   public MeasureComputerDefinition define(MeasureComputerDefinitionContext def) {
     return def.newDefinitionBuilder()
@@ -15,6 +34,10 @@ public class ComputeCopyrightCount implements MeasureComputer {
       .build();
   }
 
+  /**
+   * Computes Copyrights count
+   * @param context Sonar Measure Computer context
+   */
   @Override
   public void compute(MeasureComputerContext context) {
     // measure is already defined on files by {@link ScanOSSMetrics}

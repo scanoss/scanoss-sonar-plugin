@@ -13,11 +13,16 @@ import org.sonar.api.Plugin;
 public class ScanOSSPlugin implements Plugin {
 
     /**
+     * Creates a new instance of the ScanOSSPlugin
+     */
+    public ScanOSSPlugin(){
+        super();
+    }
+    /**
      * Defines the plugin extensions: metrics, sensor and dashboard widget.
      *
-     * @return the list of extensions for this plugin
+     * @param context Plugin's context
      */
-
     @Override
     public void define(Context context) {
         context.addExtensions(ScanOSSProperties.getProperties());
@@ -26,7 +31,7 @@ public class ScanOSSPlugin implements Plugin {
         context.addExtension(ComputeCopyleftCount.class);
         context.addExtension(ComputeCopyrightCount.class);
         context.addExtension(ComputeVulnerabilityCount.class);
-        context.addExtension(ComputeScanossScoreAverage.class);
+        //context.addExtension(ComputeScoreAverage.class);
     }
 
 }

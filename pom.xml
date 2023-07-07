@@ -5,7 +5,7 @@
   <groupId>com.scanoss.plugins.sonar</groupId>
   <artifactId>scanoss-sonar-plugin</artifactId>
   <packaging>sonar-plugin</packaging>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
 
   <name>SCANOSS Example Plugin for SonarQube 10.x</name>
   <description>SCANOSS Example of Plugin for SonarQube</description>
@@ -14,7 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <sonar.apiVersion>9.8.0.203</sonar.apiVersion>
     <sonar.testingHarnessVersion>9.5.0.56709</sonar.testingHarnessVersion>
-    <jdk.min.version>17</jdk.min.version>
+    <jdk.min.version>11</jdk.min.version>
     <sonar.sources>src/main/java,src/main/js</sonar.sources>
   </properties>
 
@@ -36,6 +36,11 @@
       <artifactId>gson</artifactId>
       <version>2.10.1</version>
     </dependency>
+    <dependency>
+      <groupId>com.scanoss</groupId>
+      <artifactId>scanoss</artifactId>
+      <version>0.4.0</version>
+    </dependency>
 
     <!-- unit tests -->
     <dependency>
@@ -47,7 +52,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -73,7 +78,19 @@
           <release>11</release>
         </configuration>
       </plugin>
-
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 

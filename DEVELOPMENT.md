@@ -5,13 +5,34 @@
 
 This document contains the instructions to build a development/testing environment from scratch, using Docker.
 
-Docker is used when possible to avoid software installation.
-
 SONAR PLUGIN: Basics
 
 https://docs.sonarqube.org/latest/extension-guide/developing-a-plugin/plugin-basics/
 
 ## Environment Setup
+
+Docker is used when possible to avoid software installation. All components are instantiated or built with Docker containers.
+
+* SONAR installation with the official `sonarqube` image.
+* Build plugin's JAR package with the official `maven` image.
+* Run Sonar local scanner with the official `sonarsource/sonar-scanner-cli`. Build custom image with scanoss-py if neccesary.  
+
+```mermaid
+flowchart TD
+   BUILD[mvn clean package]-->|Copy generated lib to your Sonar instance| JAR_FILE
+   subgraph maven build
+      BUILD
+   end
+   JAR_FILE[scanoss-plugin.jar]-->|Restart Sonar and the plugin is ready to use| LOCAL_SCANNER
+   
+   subgraph sonar local runner
+      LOCAL_SCANNER[sonar-scanner-cli]
+   end
+   
+   subgraph SONAR instance
+   JAR_FILE
+   end
+```
 
 1. Run Sonar
    This command will spin up a test Sonar installation, listening at port 9000. The default admin user and password credentials are admin:admin
@@ -25,8 +46,13 @@ https://docs.sonarqube.org/latest/extension-guide/developing-a-plugin/plugin-bas
     ```
     git clone https://github.com/SonarSource/sonar-custom-plugin-example
     cd sonar-custom-plugin-example
-    docker run --rm --platform=linux/amd64 -v $(pwd):/app -w /app -it maven clean package
-    ```
+    docker run --rm --platform=linux/amd64 -v $(pwd):/app -w /app -it maven mvn clean package
+    ``` 
+   
+   Notes:
+   
+   * Depending on maven (and therefore Java version), you may need to change the launch mechanism adding `-Djdk.lang.Process.launchMechanism=vfork`
+   * Consider adding `-v maven-repo:/root/.m2` if you want to use a local cache.
 
 3. Copy jar to /opt/sonarqube/extensions/plugins
 

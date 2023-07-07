@@ -1,14 +1,24 @@
 package com.scanoss.plugins.sonar.analyzers;
 
+import com.scanoss.dto.ScanFileDetails;
+import com.scanoss.dto.ScanFileResult;
 import com.scanoss.plugins.sonar.model.ScanResult;
-import com.scanoss.plugins.sonar.model.ScanData;
+import com.scanoss.utils.JsonUtils;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+/**
+ * SCANOSS Analyzer
+ *
+ * <p>
+ * Performs a scan and processes the output
+ * </p>
+ */
 public class ScanOSSAnalyzer {
 
     /**
@@ -27,33 +37,40 @@ public class ScanOSSAnalyzer {
     private final String key;
 
     /**
-     * The Docker Container Image
-     */
-    private final String containerImage;
-
-    /**
      * The logger.
      */
     private final Logger log = Loggers.get(this.getClass());
 
-    public ScanOSSAnalyzer(final File rootDir, String url, String key, String containerImage) {
+    /**
+     * Analyzer constructor
+     * @param rootDir Base directory to scan
+     * @param url SCANOSS API Endpoint
+     * @param key SCANOSS API Access Key (optional)
+     */
+    public ScanOSSAnalyzer(final File rootDir, String url, String key) {
         super();
         this.rootDir = rootDir;
         this.url = url;
         this.key = key;
-        this.containerImage = containerImage;
     }
 
+    /**
+     * This function calls the SCANOSS scanner and processes the output
+     * @return Scan result with a map containing all filenames as keys and the scan results as values
+     */
     public ScanResult analyze()  {
         log.info("[SCANOSS] Starting scan process...");
-        ScanResult scanResult = new ScanResult();
-        ScanOSSScanner scanner = new ScanOSSScanner(this.containerImage);
-        String output = scanner.runScan(rootDir.getPath(), this.url, this.key);
+
+        List<String> output = ScanOSSScanner.runScan(rootDir.getPath(), this.url, this.key);
         if(output == null || output.isEmpty()){
+            log.warn("[SCANOSS] Empty result");
             return null;
         }
-        Map<String, List<ScanData>> stringListMap = ScanOSSParser.parseScanResult(output);
-        scanResult.setFiles(stringListMap);
+        // Process output
+        ScanResult scanResult = new ScanResult();
+        List<ScanFileResult> outputObject = JsonUtils.toScanFileResults(output);
+        Map<String, List<ScanFileDetails>> map = outputObject.stream().collect(Collectors.toMap(ScanFileResult::getFilePath, ScanFileResult::getFileDetails));
+        scanResult.setFiles(map);
         return scanResult;
     }
 }
