@@ -1,5 +1,6 @@
   package com.scanoss.plugins.sonar.settings;
 
+  import org.sonar.api.PropertyType;
   import org.sonar.api.config.PropertyDefinition;
   import org.sonar.api.resources.Qualifiers;
 
@@ -33,6 +34,16 @@
   public static final String SCANOSS_API_TOKEN_DEFAULT_VALUE = "";
 
   /**
+   * SCANOSS Custom Certificate Chain key
+   */
+  public static final String SCANOSS_CUSTOM_CERT_CHAIN_KEY = "sonar.scanoss.scan.custom_cert_chain";
+
+  /**
+   * SCANOSS Custom Certificate Chain default value
+   */
+  public static final String SCANOSS_CUSTOM_CERT_CHAIN_DEFAULT_VALUE = "";
+
+  /**
    * Private constructor to allow only statics
    */
   private ScanOSSProperties() {
@@ -62,10 +73,21 @@
             .onQualifiers(Qualifiers.PROJECT)
             .index(1)
             .build();
+    PropertyDefinition customCertChain = PropertyDefinition.builder(SCANOSS_CUSTOM_CERT_CHAIN_KEY)
+            .type(PropertyType.TEXT)
+            .multiValues(false)
+            .defaultValue(SCANOSS_CUSTOM_CERT_CHAIN_DEFAULT_VALUE)
+            .category("SCANOSS")
+            .name("Custom Certificate Chain")
+            .description("The custom certificate chain pem value.")
+            .onQualifiers(Qualifiers.PROJECT)
+            .index(2)
+            .build();
 
     return asList(
             apiUrl,
-            apiToken
+            apiToken,
+            customCertChain
     );
   }
 

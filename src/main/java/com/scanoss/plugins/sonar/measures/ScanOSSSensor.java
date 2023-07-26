@@ -85,10 +85,11 @@ public class ScanOSSSensor implements Sensor {
 
         log.info("[SCANOSS] Analysing project root: " + rootDir.getAbsolutePath());
 
-        String url = getConfigValue(ScanOSSProperties.SCANOSS_API_URL_KEY);
-        String token = getConfigValue(ScanOSSProperties.SCANOSS_API_TOKEN_KEY);
+        String url = getStringConfigValue(ScanOSSProperties.SCANOSS_API_URL_KEY);
+        String token = getStringConfigValue(ScanOSSProperties.SCANOSS_API_TOKEN_KEY);
+        String customCertChain = getStringConfigValue(ScanOSSProperties.SCANOSS_CUSTOM_CERT_CHAIN_KEY);
 
-        ScanOSSAnalyzer analyzer = new ScanOSSAnalyzer(rootDir, url, token);
+        ScanOSSAnalyzer analyzer = new ScanOSSAnalyzer(rootDir, url, token, customCertChain);
         ScanResult projectInfo;
 
         try {
@@ -138,7 +139,7 @@ public class ScanOSSSensor implements Sensor {
      * @param key
      * @return Value for the given key
      */
-    private String getConfigValue(String key){
+    private String getStringConfigValue(String key){
         String value = "";
         Optional<String> optToken = config.get(key);
         if (optToken.isPresent()) {
