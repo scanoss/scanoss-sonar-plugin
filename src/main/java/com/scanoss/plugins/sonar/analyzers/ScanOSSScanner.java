@@ -19,33 +19,111 @@ import java.util.List;
 public class ScanOSSScanner {
 
     /**
+     * The API Url
+     */
+    private String apiUrl;
+
+    /**
+     * The API Token
+     */
+    private String apiToken;
+
+    /**
+     * The Custom Certificate Chain
+     */
+    private String customCertChain;
+
+    /**
      * The logger.
      */
     private static final Logger LOGGER = Loggers.get(ScanOSSScanner.class);
 
     /**
-     * Private constructor to allow only statics
+     * Empty constructor
      */
-    private ScanOSSScanner() {
-        // only statics
+    public ScanOSSScanner(){
+
+    }
+
+    /**
+     * ScanOSSScanner Constructor
+     * @param apiUrl Scan API Url
+     * @param apiToken Scan API Token
+     * @param customCertChain Custom Certificate Chain PEM
+     */
+    public ScanOSSScanner(String apiUrl, String apiToken, String customCertChain){
+        this.apiUrl = apiUrl;
+        this.apiToken = apiToken;
+        this.customCertChain = customCertChain;
+    }
+
+    /**
+     * API URL getter
+     * @return Url string
+     */
+    public String getApiUrl() {
+        return apiUrl;
+    }
+
+    /**
+     * API URL Setter
+     * @param apiUrl Scan API URL
+     */
+    public void setApiUrl(String apiUrl) {
+        this.apiUrl = apiUrl;
+    }
+
+    /**
+     * API Token getter
+     * @return Token string
+     */
+    public String getApiToken() {
+        return apiToken;
+    }
+
+    /**
+     * API Token setter
+     * @param apiToken Scan API Token
+     */
+    public void setApiToken(String apiToken) {
+        this.apiToken = apiToken;
+    }
+
+    /**
+     * Custom Certificate Chain getter
+     * @return Custom Certificate Chain
+     */
+    public String getCustomCertChain() {
+        return customCertChain;
+    }
+
+    /**
+     * Custom Certificate Chain setter
+     * @param customCertChain Custom Certificate Chain (PEM format)
+     */
+    public void setCustomCertChain(String customCertChain) {
+        this.customCertChain = customCertChain;
     }
 
     /**
      * Scan files in the given path against the given API endpoint url
      * @param path folder to scan
-     * @param url Scan API endpoint
-     * @param key Scan API access token (optional)
      * @return Scan result (in JSON format)
      * @throws RuntimeException Scanning went wrong
      */
-    public static List<String> runScan(String path, String url, String key) throws RuntimeException {
+    public List<String> runScan(String path) throws RuntimeException {
         LOGGER.info("[SCANOSS] Scanning path " + path + "...");
-        Scanner scanner = Scanner.builder().url(url).apiKey(key).build();
+        Scanner.ScannerBuilder scannerBuilder = Scanner.builder().url(this.apiUrl).apiKey(this.apiToken);
+        if(this.customCertChain != null && !this.customCertChain.isEmpty()) {
+            LOGGER.info("[SCANOSS] Setting custom certificate chain");
+            LOGGER.debug("[SCANOSS]" + this.customCertChain);
+            scannerBuilder = scannerBuilder.customCert(this.customCertChain);
+        }
+        Scanner scanner = scannerBuilder.build();
         List<String> output = scanner.scanFolder(path);
         LOGGER.info("[SCANOSS] Scan finished");
         LOGGER.debug("[SCANOSS] " + Arrays.toString(output.toArray()));
         return output;
-
     }
 
 }

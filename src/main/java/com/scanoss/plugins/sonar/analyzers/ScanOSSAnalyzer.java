@@ -37,21 +37,29 @@ public class ScanOSSAnalyzer {
     private final String key;
 
     /**
+     * The Custom Certificate Chain
+     */
+    private final String customCertChain;
+
+    /**
      * The logger.
      */
     private final Logger log = Loggers.get(this.getClass());
 
     /**
      * Analyzer constructor
-     * @param rootDir Base directory to scan
-     * @param url SCANOSS API Endpoint
-     * @param key SCANOSS API Access Key (optional)
+     *
+     * @param rootDir         Base directory to scan
+     * @param url             SCANOSS API Endpoint
+     * @param key             SCANOSS API Access Key (optional)
+     * @param customCertChain SCANOSS Custom Certificate Chain (optional)
      */
-    public ScanOSSAnalyzer(final File rootDir, String url, String key) {
+    public ScanOSSAnalyzer(final File rootDir, String url, String key, String customCertChain) {
         super();
         this.rootDir = rootDir;
         this.url = url;
         this.key = key;
+        this.customCertChain = customCertChain;
     }
 
     /**
@@ -60,8 +68,8 @@ public class ScanOSSAnalyzer {
      */
     public ScanResult analyze()  {
         log.info("[SCANOSS] Starting scan process...");
-
-        List<String> output = ScanOSSScanner.runScan(rootDir.getPath(), this.url, this.key);
+        ScanOSSScanner scanner = new ScanOSSScanner(this.url, this.key, this.customCertChain);
+        List<String> output = scanner.runScan(rootDir.getPath());
         if(output == null || output.isEmpty()){
             log.warn("[SCANOSS] Empty result");
             return null;
