@@ -44,6 +44,11 @@
   public static final String SCANOSS_CUSTOM_CERT_CHAIN_DEFAULT_VALUE = "";
 
   /**
+   * SCANOSS Enable/Disable Scan key
+   */
+  public static final String SCANOSS_IS_ENABLED_KEY = "sonar.scanoss.scan.enabled";
+
+  /**
    * Private constructor to allow only statics
    */
   private ScanOSSProperties() {
@@ -55,6 +60,16 @@
    * @return List of property definitions
    */
   public static List<PropertyDefinition> getProperties() {
+        PropertyDefinition isEnabled = PropertyDefinition.builder(SCANOSS_IS_ENABLED_KEY)
+            .multiValues(false)
+            .type(PropertyType.BOOLEAN)
+            .defaultValue(String.valueOf(false))
+            .category("SCANOSS")
+            .name("is Scan Enabled")
+            .description("Is Scan OSS scaning enblaed?")
+            .onQualifiers(Qualifiers.PROJECT)
+            .index(0)
+            .build();
     PropertyDefinition apiUrl = PropertyDefinition.builder(SCANOSS_API_URL_KEY)
             .multiValues(false)
             .defaultValue(SCANOSS_API_URL_DEFAULT_VALUE)
@@ -62,7 +77,7 @@
             .name("Scan API URL")
             .description("Scan API Endpoint with format \"http(s)://host:ip/api/scan/direct\". The --apiurl argument is used to pass it to the CLI.")
             .onQualifiers(Qualifiers.PROJECT)
-            .index(0)
+            .index(1)
             .build();
     PropertyDefinition apiToken = PropertyDefinition.builder(SCANOSS_API_TOKEN_KEY)
             .multiValues(false)
@@ -71,7 +86,7 @@
             .name("Scan API Token")
             .description("Scan API token. The --key argument is used to pass it to the CLI.")
             .onQualifiers(Qualifiers.PROJECT)
-            .index(1)
+            .index(2)
             .build();
     PropertyDefinition customCertChain = PropertyDefinition.builder(SCANOSS_CUSTOM_CERT_CHAIN_KEY)
             .type(PropertyType.TEXT)
@@ -81,10 +96,11 @@
             .name("Custom Certificate Chain")
             .description("The custom certificate chain pem value.")
             .onQualifiers(Qualifiers.PROJECT)
-            .index(2)
+            .index(3)
             .build();
 
     return asList(
+            isEnabled,
             apiUrl,
             apiToken,
             customCertChain
