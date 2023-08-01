@@ -81,6 +81,13 @@ public class ScanOSSSensor implements Sensor {
      */
     @Override
     public void execute(SensorContext sensorContext) {
+        Boolean isEnabled = getBooleanConfigValue(ScanOSSProperties.SCANOSS_IS_ENABLED_KEY);
+        if(! isEnabled)
+        {
+            log.info("[SCANOSS] Analysing project is disabled" );
+        	return;
+        }
+
         File rootDir = fileSystem.baseDir();
 
         log.info("[SCANOSS] Analysing project root: " + rootDir.getAbsolutePath());
@@ -142,6 +149,20 @@ public class ScanOSSSensor implements Sensor {
     private String getStringConfigValue(String key){
         String value = "";
         Optional<String> optToken = config.get(key);
+        if (optToken.isPresent()) {
+            value = optToken.get();
+        }
+        return value;
+    }
+
+       /**
+     * Gets a configuration value from the Sonar config store
+     * @param key
+     * @return Value for the given key
+     */
+    private Boolean getBooleanConfigValue(String key){
+        Boolean value = Boolean.FALSE;
+        Optional<Boolean> optToken = config.getBoolean(key);
         if (optToken.isPresent()) {
             value = optToken.get();
         }
