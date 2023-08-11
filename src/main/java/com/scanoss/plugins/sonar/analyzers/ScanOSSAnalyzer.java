@@ -63,7 +63,7 @@ public class ScanOSSAnalyzer {
     }
 
     /**
-     * This function calls the SCANOSS scanner and processes the output
+     * This function calls the SCANOSS scanner for the root directory and processes the output
      * @return Scan result with a map containing all filenames as keys and the scan results as values
      */
     public ScanResult analyze()  {
@@ -75,10 +75,32 @@ public class ScanOSSAnalyzer {
             return null;
         }
         // Process output
+        return processOutput(output);
+    }
+
+    /**
+     * This function calls the SCANOSS scanner for a given set of file paths and processes the output
+     * @param inputFilePaths List of input file paths
+     * @return Scan result with a map containing all filenames as keys and the scan results as values
+     */
+    public ScanResult analyze(List<String> inputFilePaths)  {
+        log.info("[SCANOSS] Starting scan process...");
+        ScanOSSScanner scanner = new ScanOSSScanner(this.url, this.key, this.customCertChain);
+        List<String> output = scanner.runScan(rootDir.getPath(), inputFilePaths);
+        if(output == null || output.isEmpty()){
+            log.warn("[SCANOSS] Empty result");
+            return null;
+        }
+        // Process output
+        return processOutput(output);
+    }
+
+    private ScanResult processOutput(List<String> output){
         ScanResult scanResult = new ScanResult();
         List<ScanFileResult> outputObject = JsonUtils.toScanFileResults(output);
         Map<String, List<ScanFileDetails>> map = outputObject.stream().collect(Collectors.toMap(ScanFileResult::getFilePath, ScanFileResult::getFileDetails));
         scanResult.setFiles(map);
         return scanResult;
     }
+
 }
