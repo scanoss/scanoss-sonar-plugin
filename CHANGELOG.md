@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upcoming changes...
 
+## [0.4.1] - 2023-08-11
+### Added
+- Switch scan method from folder to file list (now reading Sonar's InputFiles)
+
 ## [0.4.0] - 2023-08-01
 ### Added
 - Enable/Disable plugin option

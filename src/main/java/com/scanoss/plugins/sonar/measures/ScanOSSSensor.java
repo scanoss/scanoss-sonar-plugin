@@ -2,6 +2,9 @@ package com.scanoss.plugins.sonar.measures;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import com.google.gson.Gson;
 import com.scanoss.dto.*;
@@ -12,6 +15,7 @@ import com.scanoss.plugins.sonar.measures.processors.MeasureProcessor;
 import com.scanoss.plugins.sonar.measures.processors.VulnerabilityDetailsProcessor;
 import com.scanoss.plugins.sonar.model.*;
 import com.scanoss.plugins.sonar.settings.ScanOSSProperties;
+import org.sonar.api.batch.fs.FilePredicates;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.Sensor;
 import org.sonar.api.batch.sensor.SensorContext;
@@ -88,9 +92,12 @@ public class ScanOSSSensor implements Sensor {
         	return;
         }
 
+        List<String> inputFilePaths = this.getInputFiles(sensorContext);
         File rootDir = fileSystem.baseDir();
 
-        log.info("[SCANOSS] Analysing project root: " + rootDir.getAbsolutePath());
+        for (String file : inputFilePaths){
+            log.info("Inputfile: {} {}", rootDir, file);
+        }
 
         String url = getStringConfigValue(ScanOSSProperties.SCANOSS_API_URL_KEY);
         String token = getStringConfigValue(ScanOSSProperties.SCANOSS_API_TOKEN_KEY);
@@ -100,7 +107,7 @@ public class ScanOSSSensor implements Sensor {
         ScanResult projectInfo;
 
         try {
-            projectInfo = analyzer.analyze();
+            projectInfo = analyzer.analyze(inputFilePaths);
 
             if (projectInfo == null) {
                 log.error("[SCANOSS] Output is unavailable. Aborting...");
@@ -139,6 +146,18 @@ public class ScanOSSSensor implements Sensor {
         } catch (Exception e) {
             log.error("[SCANOSS] Error while running ScanOSS Sensor", e);
         }
+    }
+
+    /**
+     * Gets the projects files as a list of strings. It honors
+     * @param context Sensor context
+     * @return List of file paths
+     */
+    private List<String> getInputFiles(SensorContext context) {
+        FilePredicates p = context.fileSystem().predicates();
+        Iterable<InputFile> it = context.fileSystem().inputFiles(p.all());
+        Stream<InputFile> stream = StreamSupport.stream(it.spliterator(), false);
+        return stream.map(InputFile::toString).collect(Collectors.toList());
     }
 
     /**

@@ -5,8 +5,6 @@ import com.scanoss.Scanner;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 
-import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -124,6 +122,36 @@ public class ScanOSSScanner {
         LOGGER.info("[SCANOSS] Scan finished");
         LOGGER.debug("[SCANOSS] " + Arrays.toString(output.toArray()));
         return output;
+    }
+
+    /**
+     * Scan files in the given path against the given API endpoint url
+     * @param basePath Base Path
+     * @param files list of file paths to scan
+     * @return Scan result (in JSON format)
+     * @throws RuntimeException Scanning went wrong
+     */
+    public List<String> runScan(String basePath, List<String> files) throws RuntimeException {
+        LOGGER.info("[SCANOSS] Scanning " + files.size() + " files...");
+        Scanner scanner = this.buildScanner();
+        List<String> output = scanner.scanFileList(basePath, files);
+        LOGGER.info("[SCANOSS] Scan finished");
+        LOGGER.debug("[SCANOSS] " + Arrays.toString(output.toArray()));
+        return output;
+    }
+
+    /**
+     * Builds a SCANOSS scanner instance with credentials and certificates in place
+     * @return SCANOSS Scanner instance
+     */
+    private Scanner buildScanner(){
+        Scanner.ScannerBuilder scannerBuilder = Scanner.builder().url(this.apiUrl).apiKey(this.apiToken);
+        if(this.customCertChain != null && !this.customCertChain.isEmpty()) {
+            LOGGER.info("[SCANOSS] Setting custom certificate chain");
+            LOGGER.debug("[SCANOSS]" + this.customCertChain);
+            scannerBuilder = scannerBuilder.customCert(this.customCertChain);
+        }
+        return scannerBuilder.build();
     }
 
 }
