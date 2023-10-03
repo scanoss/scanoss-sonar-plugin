@@ -132,7 +132,7 @@ public class ScanOSSScanner {
      * @throws RuntimeException Scanning went wrong
      */
     public List<String> runScan(String basePath, List<String> files) throws RuntimeException {
-        LOGGER.info("[SCANOSS] Scanning " + files.size() + " files...");
+        LOGGER.info("[SCANOSS] Scanning " + basePath + "-" + files.size() + " files...");
         Scanner scanner = this.buildScanner();
         List<String> output = scanner.scanFileList(basePath, files);
         LOGGER.info("[SCANOSS] Scan finished");

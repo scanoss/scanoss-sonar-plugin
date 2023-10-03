@@ -3,6 +3,7 @@ package com.scanoss.plugins.sonar.analyzers;
 import com.scanoss.dto.ScanFileDetails;
 import com.scanoss.dto.ScanFileResult;
 import com.scanoss.plugins.sonar.model.ScanResult;
+import com.scanoss.plugins.sonar.utils.PackageDetails;
 import com.scanoss.utils.JsonUtils;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
@@ -68,6 +69,8 @@ public class ScanOSSAnalyzer {
      */
     public ScanResult analyze()  {
         log.info("[SCANOSS] Starting scan process...");
+        log.info("[SCANOSS] SCANOSS SDK version: " + com.scanoss.utils.PackageDetails.getVersion());
+        log.info("[SCANOSS] Plugin version: " + PackageDetails.getVersion());
         ScanOSSScanner scanner = new ScanOSSScanner(this.url, this.key, this.customCertChain);
         List<String> output = scanner.runScan(rootDir.getPath());
         if(output == null || output.isEmpty()){
@@ -85,6 +88,8 @@ public class ScanOSSAnalyzer {
      */
     public ScanResult analyze(List<String> inputFilePaths)  {
         log.info("[SCANOSS] Starting scan process...");
+        log.info("[SCANOSS] SCANOSS SDK version: " + com.scanoss.utils.PackageDetails.getVersion());
+        log.info("[SCANOSS] Plugin version: " + PackageDetails.getVersion());
         ScanOSSScanner scanner = new ScanOSSScanner(this.url, this.key, this.customCertChain);
         List<String> output = scanner.runScan(rootDir.getPath(), inputFilePaths);
         if(output == null || output.isEmpty()){
