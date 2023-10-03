@@ -39,7 +39,7 @@
     <dependency>
       <groupId>com.scanoss</groupId>
       <artifactId>scanoss</artifactId>
-      <version>0.5.1</version>
+      <version>0.5.3</version>
     </dependency>
 
     <!-- unit tests -->
