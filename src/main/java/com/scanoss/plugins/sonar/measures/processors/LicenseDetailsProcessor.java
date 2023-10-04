@@ -38,17 +38,17 @@ public class LicenseDetailsProcessor implements MeasureProcessor {
     public void processScanDetails(SensorContext sensorContext, InputFile file, ScanFileDetails scanData) {
         LicenseDetails[] licenseDetails = scanData.getLicenseDetails();
         if (licenseDetails == null || licenseDetails.length == 0) {
-            log.debug("[SCANOSS] No licenses found for: " + file.filename());
+            log.debug("[SCANOSS] No licenses found for: {}", file.filename());
             return;
         }
 
         List<LicenseDetails> licenses = Arrays.asList(licenseDetails);
-        Gson gson = new Gson();
-
-        log.debug("[SCANOSS] " + gson.toJson(licenses));
-
-        boolean copyleft = licenses.stream().map(LicenseDetails::isCopyleft).anyMatch(copyleftValue -> copyleftValue != null && copyleftValue);
-        log.info("[SCANOSS] Any Copyleft declaration found for file '"+file.filename()+"': "+ (copyleft? "yes":"no"));
+        if (log.isDebugEnabled()) {
+            Gson gson = new Gson();
+            log.debug("[SCANOSS] {}", gson.toJson(licenses));
+        }
+        boolean copyleft = licenses.stream().map(LicenseDetails::isCopyleft).anyMatch(copyleftValue -> copyleftValue);
+        log.info("[SCANOSS] Any Copyleft declaration found for file '{}': {}", file.filename(), (copyleft? "yes":"no"));
         sensorContext.<Integer>newMeasure()
                 .forMetric(ScanOSSMetrics.COPYLEFT_LICENSE_COUNT)
                 .on(file)

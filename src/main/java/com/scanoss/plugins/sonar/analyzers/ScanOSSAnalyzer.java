@@ -69,8 +69,7 @@ public class ScanOSSAnalyzer {
      */
     public ScanResult analyze()  {
         log.info("[SCANOSS] Starting scan process...");
-        log.info("[SCANOSS] SCANOSS SDK version: " + com.scanoss.utils.PackageDetails.getVersion());
-        log.info("[SCANOSS] Plugin version: " + PackageDetails.getVersion());
+        log.info("[SCANOSS] Plugin version: {} (SDK version: {})", PackageDetails.getVersion(), com.scanoss.utils.PackageDetails.getVersion());
         ScanOSSScanner scanner = new ScanOSSScanner(this.url, this.key, this.customCertChain);
         List<String> output = scanner.runScan(rootDir.getPath());
         if(output == null || output.isEmpty()){
@@ -88,8 +87,7 @@ public class ScanOSSAnalyzer {
      */
     public ScanResult analyze(List<String> inputFilePaths)  {
         log.info("[SCANOSS] Starting scan process...");
-        log.info("[SCANOSS] SCANOSS SDK version: " + com.scanoss.utils.PackageDetails.getVersion());
-        log.info("[SCANOSS] Plugin version: " + PackageDetails.getVersion());
+        log.info("[SCANOSS] Plugin version: {} (SDK version: {})", PackageDetails.getVersion(), com.scanoss.utils.PackageDetails.getVersion());
         ScanOSSScanner scanner = new ScanOSSScanner(this.url, this.key, this.customCertChain);
         List<String> output = scanner.runScan(rootDir.getPath(), inputFilePaths);
         if(output == null || output.isEmpty()){

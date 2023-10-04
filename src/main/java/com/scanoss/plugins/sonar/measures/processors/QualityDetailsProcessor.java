@@ -35,14 +35,14 @@ public class QualityDetailsProcessor implements MeasureProcessor {
     public void processScanDetails(SensorContext sensorContext, InputFile file, ScanFileDetails scanData) {
         QualityDetails[] qualityList = scanData.getQualityDetails();
         if(qualityList == null || qualityList.length == 0) {
-            log.warn("[SCANOSS] No quality information found for file: " + file.filename());
+            log.warn("[SCANOSS] No quality information found for file: {}", file.filename());
             return;
         }
 
         QualityDetails quality = qualityList[0];
         String score = quality.getScore();
         if (score == null) {
-            log.warn("[SCANOSS] Could not find score for file:" + file.filename());
+            log.warn("[SCANOSS] Could not find score for file: {}", file.filename());
             return;
         }
         String[] values = score.split("/");
@@ -50,7 +50,7 @@ public class QualityDetailsProcessor implements MeasureProcessor {
         double b = Double.valueOf(values[1]);
         double ratio = a / b;
 
-        log.info("[SCANOSS] Any Copyright declarations found for file '"+file.filename()+"': "+ score);
+        log.info("[SCANOSS] Any Copyright declarations found for file '{}': {}", file.filename(), score);
 
         sensorContext.<Double>newMeasure()
                 .forMetric(SCANOSS_QUALITY_SCORE)

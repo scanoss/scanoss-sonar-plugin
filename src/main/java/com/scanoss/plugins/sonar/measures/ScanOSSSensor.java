@@ -91,14 +91,13 @@ public class ScanOSSSensor implements Sensor {
             log.info("[SCANOSS] Analysing project is disabled" );
         	return;
         }
-
         List<String> inputFilePaths = this.getInputFiles(sensorContext);
         File rootDir = fileSystem.baseDir();
 
-        for (String file : inputFilePaths){
-            log.info("Inputfile: {} {}", rootDir, file);
+        if (log.isDebugEnabled()) {
+            log.debug("Root Path: {}", rootDir);
+            log.debug("Input Files: {}", inputFilePaths);
         }
-
         String url = getStringConfigValue(ScanOSSProperties.SCANOSS_API_URL_KEY);
         String token = getStringConfigValue(ScanOSSProperties.SCANOSS_API_TOKEN_KEY);
         String customCertChain = getStringConfigValue(ScanOSSProperties.SCANOSS_CUSTOM_CERT_CHAIN_KEY);
@@ -114,37 +113,36 @@ public class ScanOSSSensor implements Sensor {
                 return;
             }
             log.info("[SCANOSS] Analysis done");
-            Gson gson = new Gson();
-            log.debug("this is what we've found: " + gson.toJson(projectInfo));
-
+            if (log.isDebugEnabled()) {
+                Gson gson = new Gson();
+                log.debug("This is what we've found: {}", gson.toJson(projectInfo));
+            }
             // Process all SCANOSS results
             Map<String, List<ScanFileDetails>> files = projectInfo.getFiles();
-            log.info("[SCANOSS] Scanned files: " + files.entrySet().size());
+            log.info("[SCANOSS] Scanned files: {}", files.entrySet().size());
 
             for (String fileKey: files.keySet()) {
                 Iterator<InputFile> it = this.fileSystem.inputFiles(fileSystem.predicates().hasRelativePath(fileKey)).iterator();
                 if(!it.hasNext()) {
-                    log.warn("[SCANOSS] Could not find Sonar project file in for : " + fileKey);
+                    log.warn("[SCANOSS] Could not find Sonar project file in for: {}", fileKey);
                     continue;
                 }
                 InputFile file = it.next();
                 List<ScanFileDetails> scanDataList = files.get(file.relativePath());
-                log.info("[SCANOSS] Found project file '" + file.filename() + "' ("+ file.uri().getPath() +") and matched output to " +  scanDataList.size() + " result.");
-                if (scanDataList == null || scanDataList.size() == 0){
-                    log.warn("[SCANOSS] Could not match Sonar project file with SCANOSS output: " + fileKey);
+                log.info("[SCANOSS] Found project file '{}' ({}) and matched output to {} result.", file.filename(), file.uri().getPath(), scanDataList.size());
+                if (scanDataList == null || scanDataList.isEmpty()) {
+                    log.warn("[SCANOSS] Could not match Sonar project file with SCANOSS output: {}", fileKey);
                     continue;
                 }
-
-                log.info("[SCANOSS] Saving measures for file " + file.filename());
+                log.info("[SCANOSS] Saving measures for file {}", file.filename());
                 ScanFileDetails fileScanResult = scanDataList.get(0);
 
                 for (MeasureProcessor processor: processors) {
                     processor.processScanDetails(sensorContext, file, fileScanResult);
                 }
-
             }
         } catch (Exception e) {
-            log.error("[SCANOSS] Error while running ScanOSS Sensor", e);
+            log.error("[SCANOSS] Error while running ScanOSS Sensor: {}", e.getLocalizedMessage());
         }
     }
 
