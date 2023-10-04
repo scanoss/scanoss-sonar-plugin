@@ -35,14 +35,14 @@ public class CopyrightDetailsProcessor implements MeasureProcessor {
         CopyrightDetails[] copyrights = scanData.getCopyrightDetails();
 
         if (copyrights == null || copyrights.length == 0) {
-            log.debug("[SCANOSS] No copyrights entry found for: " + file.filename());
+            log.debug("[SCANOSS] No copyrights entry found for: {}", file.filename());
             return;
         }
 
-        // The copyrights metric equals to 1 if at least 1 copyright declaration is found. Otherwise it is 0.
+        // The copyrights metric equals to 1 if at least 1 copyright declaration is found, otherwise it is 0.
         int metricValueForFile =  copyrights.length > 0 ? 1 : 0;
 
-        log.info("[SCANOSS] Any Copyright declarations found for file '"+file.filename()+"': "+ (metricValueForFile>0? "yes":"no"));
+        log.info("[SCANOSS] Any Copyright declarations found for file '{}': {}", file.filename(), (metricValueForFile>0? "yes":"no"));
         sensorContext.<Integer>newMeasure()
                 .forMetric(ScanOSSMetrics.COPYRIGHT_COUNT)
                 .on(file)

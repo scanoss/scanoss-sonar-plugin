@@ -110,17 +110,13 @@ public class ScanOSSScanner {
      * @throws RuntimeException Scanning went wrong
      */
     public List<String> runScan(String path) throws RuntimeException {
-        LOGGER.info("[SCANOSS] Scanning path " + path + "...");
-        Scanner.ScannerBuilder scannerBuilder = Scanner.builder().url(this.apiUrl).apiKey(this.apiToken);
-        if(this.customCertChain != null && !this.customCertChain.isEmpty()) {
-            LOGGER.info("[SCANOSS] Setting custom certificate chain");
-            LOGGER.debug("[SCANOSS]" + this.customCertChain);
-            scannerBuilder = scannerBuilder.customCert(this.customCertChain);
-        }
-        Scanner scanner = scannerBuilder.build();
+        LOGGER.info("[SCANOSS] Scanning path {} ...",path);
+        Scanner scanner = this.buildScanner();
         List<String> output = scanner.scanFolder(path);
         LOGGER.info("[SCANOSS] Scan finished");
-        LOGGER.debug("[SCANOSS] " + Arrays.toString(output.toArray()));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("[SCANOSS] {}", Arrays.toString(output.toArray()));
+        }
         return output;
     }
 
@@ -132,11 +128,13 @@ public class ScanOSSScanner {
      * @throws RuntimeException Scanning went wrong
      */
     public List<String> runScan(String basePath, List<String> files) throws RuntimeException {
-        LOGGER.info("[SCANOSS] Scanning " + basePath + "-" + files.size() + " files...");
+        LOGGER.info("[SCANOSS] Scanning {} files from {} ...", files.size(), basePath);
         Scanner scanner = this.buildScanner();
         List<String> output = scanner.scanFileList(basePath, files);
         LOGGER.info("[SCANOSS] Scan finished");
-        LOGGER.debug("[SCANOSS] " + Arrays.toString(output.toArray()));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("[SCANOSS] {}", Arrays.toString(output.toArray()));
+        }
         return output;
     }
 
@@ -148,10 +146,9 @@ public class ScanOSSScanner {
         Scanner.ScannerBuilder scannerBuilder = Scanner.builder().url(this.apiUrl).apiKey(this.apiToken);
         if(this.customCertChain != null && !this.customCertChain.isEmpty()) {
             LOGGER.info("[SCANOSS] Setting custom certificate chain");
-            LOGGER.debug("[SCANOSS]" + this.customCertChain);
+            LOGGER.debug("[SCANOSS] {}", this.customCertChain);
             scannerBuilder = scannerBuilder.customCert(this.customCertChain);
         }
         return scannerBuilder.build();
     }
-
 }
