@@ -128,9 +128,10 @@ public class ScanOSSSensor implements Sensor {
                     continue;
                 }
                 InputFile file = it.next();
-                List<ScanFileDetails> scanDataList = files.get(file.relativePath());
+
+                List<ScanFileDetails> scanDataList = files.get(fileKey);
                 log.info("[SCANOSS] Found project file '{}' ({}) and matched output to {} result.", file.filename(), file.uri().getPath(), scanDataList.size());
-                if (scanDataList == null || scanDataList.isEmpty()) {
+                if (scanDataList.isEmpty()) {
                     log.warn("[SCANOSS] Could not match Sonar project file with SCANOSS output: {}", fileKey);
                     continue;
                 }
@@ -160,7 +161,7 @@ public class ScanOSSSensor implements Sensor {
 
     /**
      * Gets a configuration value from the Sonar config store
-     * @param key
+     * @param key Sonar configuration key
      * @return Value for the given key
      */
     private String getStringConfigValue(String key){
@@ -172,9 +173,9 @@ public class ScanOSSSensor implements Sensor {
         return value;
     }
 
-       /**
+    /**
      * Gets a configuration value from the Sonar config store
-     * @param key
+     * @param key Sonar configuration key
      * @return Value for the given key
      */
     private Boolean getBooleanConfigValue(String key){

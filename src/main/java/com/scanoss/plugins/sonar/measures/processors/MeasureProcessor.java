@@ -15,5 +15,5 @@ public interface MeasureProcessor {
      * @param file Project file
      * @param scanData File's scan result
      */
-    public void processScanDetails(SensorContext sensorContext, InputFile file, ScanFileDetails scanData);
+    void processScanDetails(SensorContext sensorContext, InputFile file, ScanFileDetails scanData);
 }

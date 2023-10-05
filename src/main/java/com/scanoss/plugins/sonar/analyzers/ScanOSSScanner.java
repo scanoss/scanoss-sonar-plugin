@@ -19,29 +19,22 @@ public class ScanOSSScanner {
     /**
      * The API Url
      */
-    private String apiUrl;
+    private final String apiUrl;
 
     /**
      * The API Token
      */
-    private String apiToken;
+    private final String apiToken;
 
     /**
      * The Custom Certificate Chain
      */
-    private String customCertChain;
+    private final String customCertChain;
 
     /**
      * The logger.
      */
     private static final Logger LOGGER = Loggers.get(ScanOSSScanner.class);
-
-    /**
-     * Empty constructor
-     */
-    public ScanOSSScanner(){
-
-    }
 
     /**
      * ScanOSSScanner Constructor
@@ -53,71 +46,6 @@ public class ScanOSSScanner {
         this.apiUrl = apiUrl;
         this.apiToken = apiToken;
         this.customCertChain = customCertChain;
-    }
-
-    /**
-     * API URL getter
-     * @return Url string
-     */
-    public String getApiUrl() {
-        return apiUrl;
-    }
-
-    /**
-     * API URL Setter
-     * @param apiUrl Scan API URL
-     */
-    public void setApiUrl(String apiUrl) {
-        this.apiUrl = apiUrl;
-    }
-
-    /**
-     * API Token getter
-     * @return Token string
-     */
-    public String getApiToken() {
-        return apiToken;
-    }
-
-    /**
-     * API Token setter
-     * @param apiToken Scan API Token
-     */
-    public void setApiToken(String apiToken) {
-        this.apiToken = apiToken;
-    }
-
-    /**
-     * Custom Certificate Chain getter
-     * @return Custom Certificate Chain
-     */
-    public String getCustomCertChain() {
-        return customCertChain;
-    }
-
-    /**
-     * Custom Certificate Chain setter
-     * @param customCertChain Custom Certificate Chain (PEM format)
-     */
-    public void setCustomCertChain(String customCertChain) {
-        this.customCertChain = customCertChain;
-    }
-
-    /**
-     * Scan files in the given path against the given API endpoint url
-     * @param path folder to scan
-     * @return Scan result (in JSON format)
-     * @throws RuntimeException Scanning went wrong
-     */
-    public List<String> runScan(String path) throws RuntimeException {
-        LOGGER.info("[SCANOSS] Scanning path {} ...",path);
-        Scanner scanner = this.buildScanner();
-        List<String> output = scanner.scanFolder(path);
-        LOGGER.info("[SCANOSS] Scan finished");
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("[SCANOSS] {}", Arrays.toString(output.toArray()));
-        }
-        return output;
     }
 
     /**

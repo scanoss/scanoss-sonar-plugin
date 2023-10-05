@@ -46,8 +46,8 @@ public class QualityDetailsProcessor implements MeasureProcessor {
             return;
         }
         String[] values = score.split("/");
-        double a = Double.valueOf(values[0]);
-        double b = Double.valueOf(values[1]);
+        double a = Double.parseDouble(values[0]);
+        double b = Double.parseDouble(values[1]);
         double ratio = a / b;
 
         log.info("[SCANOSS] Any Copyright declarations found for file '{}': {}", file.filename(), score);
