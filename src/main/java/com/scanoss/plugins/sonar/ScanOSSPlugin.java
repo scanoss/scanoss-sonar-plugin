@@ -13,12 +13,6 @@ import org.sonar.api.Plugin;
 public class ScanOSSPlugin implements Plugin {
 
     /**
-     * Creates a new instance of the ScanOSSPlugin
-     */
-    public ScanOSSPlugin(){
-        super();
-    }
-    /**
      * Defines the plugin extensions: metrics, sensor and dashboard widget.
      *
      * @param context Plugin's context

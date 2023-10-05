@@ -64,23 +64,6 @@ public class ScanOSSAnalyzer {
     }
 
     /**
-     * This function calls the SCANOSS scanner for the root directory and processes the output
-     * @return Scan result with a map containing all filenames as keys and the scan results as values
-     */
-    public ScanResult analyze()  {
-        log.info("[SCANOSS] Starting scan process...");
-        log.info("[SCANOSS] Plugin version: {} (SDK version: {})", PackageDetails.getVersion(), com.scanoss.utils.PackageDetails.getVersion());
-        ScanOSSScanner scanner = new ScanOSSScanner(this.url, this.key, this.customCertChain);
-        List<String> output = scanner.runScan(rootDir.getPath());
-        if(output == null || output.isEmpty()){
-            log.warn("[SCANOSS] Empty result");
-            return null;
-        }
-        // Process output
-        return processOutput(output);
-    }
-
-    /**
      * This function calls the SCANOSS scanner for a given set of file paths and processes the output
      * @param inputFilePaths List of input file paths
      * @return Scan result with a map containing all filenames as keys and the scan results as values

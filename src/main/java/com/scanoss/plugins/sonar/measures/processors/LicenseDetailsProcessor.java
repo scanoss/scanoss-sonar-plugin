@@ -47,7 +47,7 @@ public class LicenseDetailsProcessor implements MeasureProcessor {
             Gson gson = new Gson();
             log.debug("[SCANOSS] {}", gson.toJson(licenses));
         }
-        boolean copyleft = licenses.stream().map(LicenseDetails::isCopyleft).anyMatch(copyleftValue -> copyleftValue);
+        boolean copyleft = licenses.stream().anyMatch(LicenseDetails::isCopyleft);
         log.info("[SCANOSS] Any Copyleft declaration found for file '{}': {}", file.filename(), (copyleft? "yes":"no"));
         sensorContext.<Integer>newMeasure()
                 .forMetric(ScanOSSMetrics.COPYLEFT_LICENSE_COUNT)
