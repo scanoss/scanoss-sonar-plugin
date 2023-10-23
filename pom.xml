@@ -5,7 +5,7 @@
   <groupId>com.scanoss.plugins.sonar</groupId>
   <artifactId>scanoss-sonar-plugin</artifactId>
   <packaging>sonar-plugin</packaging>
-  <version>0.4.2</version>
+  <version>0.4.3</version>
 
   <name>SCANOSS Example Plugin for SonarQube 10.x</name>
   <description>SCANOSS Example of Plugin for SonarQube</description>
@@ -39,7 +39,7 @@
     <dependency>
       <groupId>com.scanoss</groupId>
       <artifactId>scanoss</artifactId>
-      <version>0.5.3</version>
+      <version>0.5.4</version>
     </dependency>
 
     <!-- unit tests -->

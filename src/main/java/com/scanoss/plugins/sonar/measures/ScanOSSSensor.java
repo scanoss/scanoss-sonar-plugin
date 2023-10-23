@@ -143,7 +143,7 @@ public class ScanOSSSensor implements Sensor {
                 }
             }
         } catch (Exception e) {
-            log.error("[SCANOSS] Error while running ScanOSS Sensor: {}", e.getLocalizedMessage());
+            log.error("[SCANOSS] Error while running ScanOSS Sensor ({}): {}", e.getClass().getSimpleName(), e.getLocalizedMessage(), e);
         }
     }
 

@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upcoming changes...
 
+## [0.4.3] - 2023-10-23
+### Added
+- Upgrade to scanoss.java 0.5.4
+- Add stacktrace to scan error output
+
+## [0.4.2] - 2023-08-11
+### Added
+- Refactor: improved overall code quality 
+
 ## [0.4.1] - 2023-08-11
 ### Added
 - Switch scan method from folder to file list (now reading Sonar's InputFiles)
