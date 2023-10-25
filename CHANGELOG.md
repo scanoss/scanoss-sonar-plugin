@@ -11,12 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upcoming changes...
 
+## [0.4.4] - 2023-10-25
+### Added
+- Upgrade to scanoss.java 0.5.5
+
 ## [0.4.3] - 2023-10-23
 ### Added
 - Upgrade to scanoss.java 0.5.4
 - Add stacktrace to scan error output
 
-## [0.4.2] - 2023-08-11
+## [0.4.2] - 2023-10-05
 ### Added
 - Refactor: improved overall code quality 
 
@@ -40,3 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.2.0]: https://github.com/scanoss/scanoss-sonar-example-plugin/compare/v0.0.0...v0.2.0
 [0.3.0]: https://github.com/scanoss/scanoss-sonar-example-plugin/compare/v0.2.0...v0.3.0
 [0.4.0]: https://github.com/scanoss/scanoss-sonar-example-plugin/compare/v0.3.0...v0.4.0
+[0.4.1]: https://github.com/scanoss/scanoss-sonar-example-plugin/compare/v0.4.0...v0.4.1
+[0.4.2]: https://github.com/scanoss/scanoss-sonar-example-plugin/compare/v0.4.1...v0.4.2
+[0.4.3]: https://github.com/scanoss/scanoss-sonar-example-plugin/compare/v0.4.2...v0.4.3
+[0.4.4]: https://github.com/scanoss/scanoss-sonar-example-plugin/compare/v0.4.3...v0.4.4
