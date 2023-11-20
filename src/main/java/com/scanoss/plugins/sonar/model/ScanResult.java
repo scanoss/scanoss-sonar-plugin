@@ -2,6 +2,8 @@ package com.scanoss.plugins.sonar.model;
 
 import com.scanoss.dto.ScanFileDetails;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +21,7 @@ public class ScanResult {
      * Creates an empty ScanResult.
      */
     public ScanResult(){
+        this.files = new HashMap<String, List<ScanFileDetails>>();
 
     }
 

@@ -75,7 +75,7 @@ public class ScanOSSAnalyzer {
         List<String> output = scanner.runScan(rootDir.getPath(), inputFilePaths);
         if(output == null || output.isEmpty()){
             log.warn("[SCANOSS] Empty result");
-            return null;
+            return new ScanResult();
         }
         // Process output
         return processOutput(output);

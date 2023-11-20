@@ -1,6 +1,7 @@
 package com.scanoss.plugins.sonar.measures;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -156,7 +157,13 @@ public class ScanOSSSensor implements Sensor {
         FilePredicates p = context.fileSystem().predicates();
         Iterable<InputFile> it = context.fileSystem().inputFiles(p.all());
         Stream<InputFile> stream = StreamSupport.stream(it.spliterator(), false);
-        return stream.map(InputFile::toString).collect(Collectors.toList());
+
+        String rootPath = context.fileSystem().baseDir().getAbsolutePath();
+        return stream.map(inputFile -> {
+            File file = context.fileSystem().resolvePath(inputFile.uri().getPath());
+            // Make it relative to the root path
+            return Paths.get(rootPath).relativize(Paths.get(file.getAbsolutePath())).toString();
+        }).collect(Collectors.toList());
     }
 
     /**
