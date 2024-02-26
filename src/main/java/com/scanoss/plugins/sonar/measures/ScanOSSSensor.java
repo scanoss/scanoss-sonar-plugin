@@ -102,8 +102,14 @@ public class ScanOSSSensor implements Sensor {
         String url = getStringConfigValue(ScanOSSProperties.SCANOSS_API_URL_KEY);
         String token = getStringConfigValue(ScanOSSProperties.SCANOSS_API_TOKEN_KEY);
         String customCertChain = getStringConfigValue(ScanOSSProperties.SCANOSS_CUSTOM_CERT_CHAIN_KEY);
+        Boolean isSbomIdentifyEnabled = getBooleanConfigValue(ScanOSSProperties.SCANOSS_IS_SBOM_IDENTIFY_ENABLED_KEY);
 
-        ScanOSSAnalyzer analyzer = new ScanOSSAnalyzer(rootDir, url, token, customCertChain);
+        String sbomFilename = "";
+        if( isSbomIdentifyEnabled ){
+            sbomFilename = getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_FILENAME_KEY);
+        }
+
+        ScanOSSAnalyzer analyzer = new ScanOSSAnalyzer(rootDir, url, token, customCertChain, sbomFilename);
         ScanResult projectInfo;
 
         try {

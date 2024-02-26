@@ -1,18 +1,22 @@
-  package com.scanoss.plugins.sonar.settings;
+package com.scanoss.plugins.sonar.settings;
 
-  import org.sonar.api.PropertyType;
-  import org.sonar.api.config.PropertyDefinition;
-  import org.sonar.api.resources.Qualifiers;
+import org.sonar.api.PropertyType;
+import org.sonar.api.config.PropertyDefinition;
+import org.sonar.api.resources.Qualifiers;
 
-  import java.util.List;
+import java.util.List;
 
-  import static java.util.Arrays.asList;
+import static java.util.Arrays.asList;
 
   /**
    * SCANOSS Properties class
    */
-  public class ScanOSSProperties {
+public class ScanOSSProperties {
 
+    /**
+     * SCANOSS Enable/Disable Scan key
+     */
+    public static final String SCANOSS_IS_ENABLED_KEY = "sonar.scanoss.scan.enabled";
   /**
    * SCANOSS API URL Configuration key
    */
@@ -44,9 +48,19 @@
   public static final String SCANOSS_CUSTOM_CERT_CHAIN_DEFAULT_VALUE = "";
 
   /**
+   * SCANOSS Enable/Disable Scan SBOM Identify key
+   */
+  public static final String SCANOSS_IS_SBOM_IDENTIFY_ENABLED_KEY = "sonar.scanoss.scan.sbom.enabled";
+
+  /**
    * SCANOSS Enable/Disable Scan key
    */
-  public static final String SCANOSS_IS_ENABLED_KEY = "sonar.scanoss.scan.enabled";
+  public static final String SCANOSS_SBOM_FILENAME_KEY = "sonar.scanoss.scan.sbom.filename";
+
+  /**
+   * SCANOSS API URL Configuration default value
+   */
+  public static final String SCANOSS_SBOM_FILENAME_DEFAULT_VALUE = "sbom.json";
 
   /**
    * Private constructor to allow only statics
@@ -65,8 +79,8 @@
             .type(PropertyType.BOOLEAN)
             .defaultValue(String.valueOf(false))
             .category("SCANOSS")
-            .name("is Scan Enabled")
-            .description("Is Scan OSS scaning enblaed?")
+            .name("Is Scan Enabled")
+            .description("Is ScanOSS scanning enabled?")
             .onQualifiers(Qualifiers.PROJECT)
             .index(0)
             .build();
@@ -98,12 +112,33 @@
             .onQualifiers(Qualifiers.PROJECT)
             .index(3)
             .build();
+    PropertyDefinition isIdentifyEnabled = PropertyDefinition.builder(SCANOSS_IS_SBOM_IDENTIFY_ENABLED_KEY)
+            .multiValues(false)
+            .type(PropertyType.BOOLEAN)
+            .defaultValue(String.valueOf(true))
+            .category("SCANOSS")
+            .name("Is SBOM identify Enabled")
+            .description("Is ScanOSS SBOM identify enabled?")
+            .onQualifiers(Qualifiers.PROJECT)
+            .index(4)
+            .build();
+    PropertyDefinition sbomFilename = PropertyDefinition.builder(SCANOSS_SBOM_FILENAME_KEY)
+            .multiValues(false)
+            .defaultValue(SCANOSS_SBOM_FILENAME_DEFAULT_VALUE)
+            .category("SCANOSS")
+            .name("Scan input SBOM filename")
+            .description("Scan and identify components in SBOM file. The --identify argument is used to pass it to the CLI.")
+            .onQualifiers(Qualifiers.PROJECT)
+            .index(5)
+            .build();
 
     return asList(
             isEnabled,
             apiUrl,
             apiToken,
-            customCertChain
+            customCertChain,
+            isIdentifyEnabled,
+            sbomFilename
     );
   }
 

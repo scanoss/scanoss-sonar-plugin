@@ -36,6 +36,19 @@ public class ScanOSSMetrics implements Metrics {
             .create();
 
     /**
+     * New Code Copyleft license count metric
+     */
+    public static final Metric<Integer> NEW_COPYLEFT_LICENSE_COUNT = new Metric.Builder("new_copyleft_license_count", "New Copyleft License Count", Metric.ValueType.INT)
+            .setDescription("This metric counts the number of Copyleft license declarations found by SCANOSS on new/changed code")
+            .setDirection(Metric.DIRECTION_BETTER)
+            .setQualitative(false)
+            .setDomain(DOMAIN_SCANOSS)
+            .setDeleteHistoricalData(true)
+            .setBestValue(0.0)
+            .setHidden(false)
+            .create();
+
+    /**
      * Vulnerability count metric
      */
     public static final Metric<Integer> VULNERABILITY_COUNT = new Metric.Builder("vulnerability_count", "Vulnerability Count", Metric.ValueType.INT)
@@ -72,6 +85,8 @@ public class ScanOSSMetrics implements Metrics {
      */
     public List<Metric> getMetrics() {
         return Arrays.asList(
-                COPYLEFT_LICENSE_COUNT, COPYRIGHT_COUNT, VULNERABILITY_COUNT/*, SCANOSS_QUALITY_SCORE*/);
+                COPYLEFT_LICENSE_COUNT, COPYRIGHT_COUNT, VULNERABILITY_COUNT, /*, SCANOSS_QUALITY_SCORE*/
+                NEW_COPYLEFT_LICENSE_COUNT
+        );
     }
 }

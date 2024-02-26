@@ -7,6 +7,7 @@ import org.sonar.api.utils.log.Loggers;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * SCANOSS Scanner
@@ -32,6 +33,11 @@ public class ScanOSSScanner {
     private final String customCertChain;
 
     /**
+     * The SBOM Filename to identify components
+     */
+    private final String sbomFilename;
+
+    /**
      * The logger.
      */
     private static final Logger LOGGER = Loggers.get(ScanOSSScanner.class);
@@ -41,11 +47,13 @@ public class ScanOSSScanner {
      * @param apiUrl Scan API Url
      * @param apiToken Scan API Token
      * @param customCertChain Custom Certificate Chain PEM
+     * @param sbomFilename SBOM filename
      */
-    public ScanOSSScanner(String apiUrl, String apiToken, String customCertChain){
+    public ScanOSSScanner(String apiUrl, String apiToken, String customCertChain, String sbomFilename){
         this.apiUrl = apiUrl;
         this.apiToken = apiToken;
         this.customCertChain = customCertChain;
+        this.sbomFilename = sbomFilename;
     }
 
     /**
@@ -57,7 +65,8 @@ public class ScanOSSScanner {
      */
     public List<String> runScan(String basePath, List<String> files) throws RuntimeException {
         LOGGER.info("[SCANOSS] Scanning {} files from {} ...", files.size(), basePath);
-        Scanner scanner = this.buildScanner();
+        Scanner scanner = this.buildBaseScanner(files).build();
+
         List<String> output = scanner.scanFileList(basePath, files);
         LOGGER.info("[SCANOSS] Scan finished");
         if (LOGGER.isDebugEnabled()) {
@@ -68,15 +77,29 @@ public class ScanOSSScanner {
 
     /**
      * Builds a SCANOSS scanner instance with credentials and certificates in place
+     * @param files list of file paths to scan
      * @return SCANOSS Scanner instance
      */
-    private Scanner buildScanner(){
+    private Scanner.ScannerBuilder buildBaseScanner(List<String> files){
         Scanner.ScannerBuilder scannerBuilder = Scanner.builder().url(this.apiUrl).apiKey(this.apiToken);
+
+        // Custom Certificate Chain
         if(this.customCertChain != null && !this.customCertChain.isEmpty()) {
             LOGGER.info("[SCANOSS] Setting custom certificate chain");
             LOGGER.debug("[SCANOSS] {}", this.customCertChain);
             scannerBuilder = scannerBuilder.customCert(this.customCertChain);
         }
-        return scannerBuilder.build();
+
+        // SBOM Identify
+        if(this.sbomFilename != null && !this.sbomFilename.isEmpty()) {
+            // Search for SBOM file
+            Optional<String> sbomFile = files.stream().filter(s -> s.equalsIgnoreCase(sbomFilename)).findFirst();
+            if(sbomFile.isPresent()){
+                LOGGER.info("[SCANOSS] Setting SBOM Identify");
+                scannerBuilder = scannerBuilder.sbom(sbomFile.get()).scanFlags("512");
+            }
+        }
+
+        return scannerBuilder;
     }
 }

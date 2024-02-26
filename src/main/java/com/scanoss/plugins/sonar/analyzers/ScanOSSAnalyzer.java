@@ -43,9 +43,15 @@ public class ScanOSSAnalyzer {
     private final String customCertChain;
 
     /**
+     * The SBOM Filename to identify components
+     */
+    private final String sbomFilename;
+
+    /**
      * The logger.
      */
     private final Logger log = Loggers.get(this.getClass());
+
 
     /**
      * Analyzer constructor
@@ -54,13 +60,15 @@ public class ScanOSSAnalyzer {
      * @param url             SCANOSS API Endpoint
      * @param key             SCANOSS API Access Key (optional)
      * @param customCertChain SCANOSS Custom Certificate Chain (optional)
+     * @param sbomFilename    SBOM filename
      */
-    public ScanOSSAnalyzer(final File rootDir, String url, String key, String customCertChain) {
+    public ScanOSSAnalyzer(final File rootDir, String url, String key, String customCertChain, String sbomFilename) {
         super();
         this.rootDir = rootDir;
         this.url = url;
         this.key = key;
         this.customCertChain = customCertChain;
+        this.sbomFilename = sbomFilename;
     }
 
     /**
@@ -71,7 +79,7 @@ public class ScanOSSAnalyzer {
     public ScanResult analyze(List<String> inputFilePaths)  {
         log.info("[SCANOSS] Starting scan process...");
         log.info("[SCANOSS] Plugin version: {} (SDK version: {})", PackageDetails.getVersion(), com.scanoss.utils.PackageDetails.getVersion());
-        ScanOSSScanner scanner = new ScanOSSScanner(this.url, this.key, this.customCertChain);
+        ScanOSSScanner scanner = new ScanOSSScanner(this.url, this.key, this.customCertChain, this.sbomFilename);
         List<String> output = scanner.runScan(rootDir.getPath(), inputFilePaths);
         if(output == null || output.isEmpty()){
             log.warn("[SCANOSS] Empty result");
