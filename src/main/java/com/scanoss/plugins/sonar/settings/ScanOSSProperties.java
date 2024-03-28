@@ -21,7 +21,7 @@
   /**
    * SCANOSS API URL Configuration default value
    */
-  public static final String SCANOSS_API_URL_DEFAULT_VALUE = "https://osskb.org/api/scan/direct";
+  public static final String SCANOSS_API_URL_DEFAULT_VALUE = "https://api.osskb.org/scan/direct";
 
   /**
    * SCANOSS API Token Configuration key
