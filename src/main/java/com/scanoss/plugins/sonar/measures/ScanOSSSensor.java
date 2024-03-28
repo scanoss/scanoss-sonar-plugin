@@ -102,8 +102,10 @@ public class ScanOSSSensor implements Sensor {
         String url = getStringConfigValue(ScanOSSProperties.SCANOSS_API_URL_KEY);
         String token = getStringConfigValue(ScanOSSProperties.SCANOSS_API_TOKEN_KEY);
         String customCertChain = getStringConfigValue(ScanOSSProperties.SCANOSS_CUSTOM_CERT_CHAIN_KEY);
+        String sbomIdentify = getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IDENTIFY);
+        String sbomIgnore = getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IGNORE);
 
-        ScanOSSAnalyzer analyzer = new ScanOSSAnalyzer(rootDir, url, token, customCertChain);
+        ScanOSSAnalyzer analyzer = new ScanOSSAnalyzer(rootDir, url, token, customCertChain, sbomIdentify, sbomIgnore);
         ScanResult projectInfo;
 
         try {
@@ -159,6 +161,7 @@ public class ScanOSSSensor implements Sensor {
         Stream<InputFile> stream = StreamSupport.stream(it.spliterator(), false);
 
         String rootPath = context.fileSystem().baseDir().getAbsolutePath();
+
         return stream.map(inputFile -> {
             File file = context.fileSystem().resolvePath(inputFile.uri().getPath());
             // Make it relative to the root path
