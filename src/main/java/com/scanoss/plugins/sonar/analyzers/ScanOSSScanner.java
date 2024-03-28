@@ -5,6 +5,10 @@ import com.scanoss.Scanner;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,15 +41,28 @@ public class ScanOSSScanner {
     private static final Logger LOGGER = Loggers.get(ScanOSSScanner.class);
 
     /**
+     * SBOM identify file name
+     */
+    private final String sbomIdentify;
+
+
+    /**
+     * SBOM identify file name
+     */
+    private final String sbomIgnore;
+
+    /**
      * ScanOSSScanner Constructor
      * @param apiUrl Scan API Url
      * @param apiToken Scan API Token
      * @param customCertChain Custom Certificate Chain PEM
      */
-    public ScanOSSScanner(String apiUrl, String apiToken, String customCertChain){
+    public ScanOSSScanner(String apiUrl, String apiToken, String customCertChain, String sbomIdentify, String sbomIgnore){
         this.apiUrl = apiUrl;
         this.apiToken = apiToken;
         this.customCertChain = customCertChain;
+        this.sbomIdentify = sbomIdentify;
+        this.sbomIgnore = sbomIgnore;
     }
 
     /**
@@ -67,11 +84,39 @@ public class ScanOSSScanner {
     }
 
     /**
+     * Load the specified file into a string
+     * @param filename filename to load
+     * @return loaded string
+     */
+    private String loadFileToString(String filename) {
+        File file = new File(filename);
+        if (!file.exists() || !file.isFile()) {
+            throw new RuntimeException(String.format("File does not exist or is not a file: %s", filename));
+        }
+        try {
+            return Files.readString(file.toPath());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Builds a SCANOSS scanner instance with credentials and certificates in place
      * @return SCANOSS Scanner instance
      */
     private Scanner buildScanner(){
         Scanner.ScannerBuilder scannerBuilder = Scanner.builder().url(this.apiUrl).apiKey(this.apiToken);
+        if(this.sbomIgnore != null && !this.sbomIgnore.isEmpty()){
+            scannerBuilder.sbomType("blacklist");
+            scannerBuilder.sbom(loadFileToString(this.sbomIgnore));
+        }
+
+        if(this.sbomIdentify !=null && !this.sbomIdentify.isEmpty()){
+            scannerBuilder.sbomType("identify");
+            scannerBuilder.sbom(loadFileToString(this.sbomIdentify));
+        }
+
+
         if(this.customCertChain != null && !this.customCertChain.isEmpty()) {
             LOGGER.info("[SCANOSS] Setting custom certificate chain");
             LOGGER.debug("[SCANOSS] {}", this.customCertChain);
