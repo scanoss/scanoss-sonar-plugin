@@ -10,11 +10,9 @@ import java.util.stream.StreamSupport;
 import com.google.gson.Gson;
 import com.scanoss.dto.*;
 import com.scanoss.plugins.sonar.analyzers.ScanOSSAnalyzer;
-import com.scanoss.plugins.sonar.measures.processors.CopyrightDetailsProcessor;
-import com.scanoss.plugins.sonar.measures.processors.LicenseDetailsProcessor;
-import com.scanoss.plugins.sonar.measures.processors.MeasureProcessor;
-import com.scanoss.plugins.sonar.measures.processors.VulnerabilityDetailsProcessor;
+import com.scanoss.plugins.sonar.measures.processors.*;
 import com.scanoss.plugins.sonar.model.*;
+import com.scanoss.plugins.sonar.rules.ScanossRuleDefinition;
 import com.scanoss.plugins.sonar.settings.ScanOSSProperties;
 import org.sonar.api.batch.fs.FilePredicates;
 import org.sonar.api.batch.fs.InputFile;
@@ -44,11 +42,7 @@ public class ScanOSSSensor implements Sensor {
     /**
      * Available measure processors
      */
-    private final MeasureProcessor[] processors = new MeasureProcessor[]{
-            new LicenseDetailsProcessor(),
-            new CopyrightDetailsProcessor(),
-            new VulnerabilityDetailsProcessor()
-    };
+    private final MeasureProcessor[] processors;
 
     /**
      * The configuration object for the connection details.
@@ -69,6 +63,12 @@ public class ScanOSSSensor implements Sensor {
     public ScanOSSSensor(FileSystem fileSystem, Configuration config) {
         this.fileSystem = fileSystem;
         this.config = config;
+        this.processors = new MeasureProcessor[]{
+                new LicenseDetailsProcessor(),
+                new CopyrightDetailsProcessor(),
+                new VulnerabilityDetailsProcessor(),
+                new UndeclaredComponentProcessor(!(getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IDENTIFY).isEmpty())),
+        };
     }
 
     /**
@@ -78,6 +78,8 @@ public class ScanOSSSensor implements Sensor {
     @Override
     public void describe(SensorDescriptor sensorDescriptor) {
         sensorDescriptor.name("Scan with SCANOSS");
+
+        sensorDescriptor.createIssuesForRuleRepositories(ScanossRuleDefinition.REPOSITORY);
     }
 
     /**
@@ -105,23 +107,24 @@ public class ScanOSSSensor implements Sensor {
         String sbomIdentify = getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IDENTIFY);
         String sbomIgnore = getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IGNORE);
 
+
         ScanOSSAnalyzer analyzer = new ScanOSSAnalyzer(rootDir, url, token, customCertChain, sbomIdentify, sbomIgnore);
-        ScanResult projectInfo;
+        ScanResult projectScanResult;
 
         try {
-            projectInfo = analyzer.analyze(inputFilePaths);
+            projectScanResult = analyzer.analyze(inputFilePaths);
 
-            if (projectInfo == null) {
+            if (projectScanResult == null) {
                 log.error("[SCANOSS] Output is unavailable. Aborting...");
                 return;
             }
             log.info("[SCANOSS] Analysis done");
             if (log.isDebugEnabled()) {
                 Gson gson = new Gson();
-                log.debug("This is what we've found: {}", gson.toJson(projectInfo));
+                log.debug("This is what we've found: {}", gson.toJson(projectScanResult));
             }
             // Process all SCANOSS results
-            Map<String, List<ScanFileDetails>> files = projectInfo.getFiles();
+            Map<String, List<ScanFileDetails>> files = projectScanResult.getFiles();
             log.info("[SCANOSS] Scanned files: {}", files.entrySet().size());
 
             for (String fileKey: files.keySet()) {
@@ -130,19 +133,19 @@ public class ScanOSSSensor implements Sensor {
                     log.warn("[SCANOSS] Could not find Sonar project file in for: {}", fileKey);
                     continue;
                 }
-                InputFile file = it.next();
+                InputFile sonarFile = it.next();
 
                 List<ScanFileDetails> scanDataList = files.get(fileKey);
-                log.info("[SCANOSS] Found project file '{}' ({}) and matched output to {} result.", file.filename(), file.uri().getPath(), scanDataList.size());
+                log.info("[SCANOSS] Found project file '{}' ({}) and matched output to {} result.", sonarFile.filename(), sonarFile.uri().getPath(), scanDataList.size());
                 if (scanDataList.isEmpty()) {
                     log.warn("[SCANOSS] Could not match Sonar project file with SCANOSS output: {}", fileKey);
                     continue;
                 }
-                log.info("[SCANOSS] Saving measures for file {}", file.filename());
+                log.info("[SCANOSS] Saving measures for file {}", sonarFile.filename());
                 ScanFileDetails fileScanResult = scanDataList.get(0);
 
                 for (MeasureProcessor processor: processors) {
-                    processor.processScanDetails(sensorContext, file, fileScanResult);
+                    processor.processScanDetails(sensorContext, sonarFile, fileScanResult);
                 }
             }
         } catch (Exception e) {

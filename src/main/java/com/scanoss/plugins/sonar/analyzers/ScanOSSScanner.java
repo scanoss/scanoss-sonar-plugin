@@ -114,6 +114,7 @@ public class ScanOSSScanner {
         if(this.sbomIdentify !=null && !this.sbomIdentify.isEmpty()){
             scannerBuilder.sbomType("identify");
             scannerBuilder.sbom(loadFileToString(this.sbomIdentify));
+            scannerBuilder.scanFlags("512");
         }
 
 

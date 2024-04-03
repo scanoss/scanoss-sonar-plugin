@@ -55,4 +55,5 @@ public class LicenseDetailsProcessor implements MeasureProcessor {
                 .withValue(copyleft ? 1 : 0)
                 .save();
     }
+
 }

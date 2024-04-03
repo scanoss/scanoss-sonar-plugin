@@ -58,4 +58,5 @@ public class QualityDetailsProcessor implements MeasureProcessor {
                 .withValue(ratio)
                 .save();
     }
+
 }

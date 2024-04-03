@@ -1,6 +1,8 @@
 package com.scanoss.plugins.sonar;
 
 import com.scanoss.plugins.sonar.measures.*;
+import com.scanoss.plugins.sonar.measures.processors.UndeclaredComponentProcessor;
+import com.scanoss.plugins.sonar.rules.ScanossRuleDefinition;
 import com.scanoss.plugins.sonar.settings.ScanOSSProperties;
 import org.sonar.api.Plugin;
 
@@ -26,6 +28,9 @@ public class ScanOSSPlugin implements Plugin {
         context.addExtension(ComputeCopyrightCount.class);
         context.addExtension(ComputeVulnerabilityCount.class);
         //context.addExtension(ComputeScoreAverage.class);
+
+
+        context.addExtensions(ScanossRuleDefinition.class, UndeclaredComponentProcessor.class);
     }
 
 }
