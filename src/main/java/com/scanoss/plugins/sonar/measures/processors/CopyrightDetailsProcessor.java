@@ -49,4 +49,6 @@ public class CopyrightDetailsProcessor implements MeasureProcessor {
                 .withValue(metricValueForFile)
                 .save();
     }
+
+
 }
