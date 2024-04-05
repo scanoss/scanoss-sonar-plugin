@@ -12,7 +12,7 @@ import com.scanoss.dto.*;
 import com.scanoss.plugins.sonar.analyzers.ScanOSSAnalyzer;
 import com.scanoss.plugins.sonar.measures.processors.*;
 import com.scanoss.plugins.sonar.model.*;
-import com.scanoss.plugins.sonar.rules.ScanOSSRuleDefinitions;
+import com.scanoss.plugins.sonar.rules.ScanOSSRuleDefinitionBuilder;
 import com.scanoss.plugins.sonar.settings.ScanOSSProperties;
 import org.sonar.api.batch.fs.FilePredicates;
 import org.sonar.api.batch.fs.InputFile;
@@ -29,8 +29,6 @@ import org.sonar.api.utils.log.Loggers;
  * IDE Metadata plugin sensor. It analyses project directory in search for
  * IDE metadata configuration files and extracts relevant information.
  *
- * @author jorge.hidalgo
- * @version 1.0
  */
 public class ScanOSSSensor implements Sensor {
 
@@ -84,7 +82,7 @@ public class ScanOSSSensor implements Sensor {
     public void describe(SensorDescriptor sensorDescriptor) {
         sensorDescriptor.name("Scan with SCANOSS");
 
-        sensorDescriptor.createIssuesForRuleRepositories(ScanOSSRuleDefinitions.REPOSITORY);
+        sensorDescriptor.createIssuesForRuleRepositories(ScanOSSRuleDefinitionBuilder.REPOSITORY);
     }
 
     /**

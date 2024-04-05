@@ -1,7 +1,7 @@
 package com.scanoss.plugins.sonar.measures.processors;
 
 import com.scanoss.dto.ScanFileDetails;
-import com.scanoss.plugins.sonar.rules.ScanOSSRuleDefinitions;
+import com.scanoss.plugins.sonar.rules.ScanOSSUndeclaredComponentRuleDefinition;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.issue.NewIssue;
@@ -28,7 +28,7 @@ public class UndeclaredComponentProcessor implements MeasureProcessor {
 
         if(!matchId.equalsIgnoreCase("none")){
             NewIssue newIssue = sensorContext.newIssue()
-                    .forRule(ScanOSSRuleDefinitions.RULE_UNDECLARED_COMPONENT);
+                    .forRule(ScanOSSUndeclaredComponentRuleDefinition.ruleKey);
 
             NewIssueLocation primaryLocation = newIssue.newLocation()
                     .on(sonarFile)
