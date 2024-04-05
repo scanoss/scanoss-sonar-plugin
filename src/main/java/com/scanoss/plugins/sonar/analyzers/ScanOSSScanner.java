@@ -1,14 +1,10 @@
 package com.scanoss.plugins.sonar.analyzers;
 
-
 import com.scanoss.Scanner;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
-
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,6 +15,13 @@ import java.util.List;
  * </p>
  */
 public class ScanOSSScanner {
+
+    private final String SBOM_BLACKLIST = "blacklist";
+
+    private final String SBOM_IDENTIFY = "identify";
+
+    private final String FLAG_ENGINE_HIDE_IDENTIFIED_FILES = "512";
+
 
     /**
      * The API Url
@@ -52,17 +55,23 @@ public class ScanOSSScanner {
     private final String sbomIgnore;
 
     /**
+     * HPSM option
+     */
+    private final Boolean isHpsmEnabled ;
+
+    /**
      * ScanOSSScanner Constructor
      * @param apiUrl Scan API Url
      * @param apiToken Scan API Token
      * @param customCertChain Custom Certificate Chain PEM
      */
-    public ScanOSSScanner(String apiUrl, String apiToken, String customCertChain, String sbomIdentify, String sbomIgnore){
+    public ScanOSSScanner(String apiUrl, String apiToken, String customCertChain, String sbomIdentify, String sbomIgnore, Boolean isHpsmEnabled){
         this.apiUrl = apiUrl;
         this.apiToken = apiToken;
         this.customCertChain = customCertChain;
         this.sbomIdentify = sbomIdentify;
         this.sbomIgnore = sbomIgnore;
+        this.isHpsmEnabled = isHpsmEnabled;
     }
 
     /**
@@ -105,16 +114,16 @@ public class ScanOSSScanner {
      * @return SCANOSS Scanner instance
      */
     private Scanner buildScanner(){
-        Scanner.ScannerBuilder scannerBuilder = Scanner.builder().url(this.apiUrl).apiKey(this.apiToken);
+        Scanner.ScannerBuilder scannerBuilder = Scanner.builder().url(this.apiUrl + "/scan/direct" ).apiKey(this.apiToken);
         if(this.sbomIgnore != null && !this.sbomIgnore.isEmpty()){
-            scannerBuilder.sbomType("blacklist");
+            scannerBuilder.sbomType(this.SBOM_BLACKLIST);
             scannerBuilder.sbom(loadFileToString(this.sbomIgnore));
         }
 
         if(this.sbomIdentify !=null && !this.sbomIdentify.isEmpty()){
-            scannerBuilder.sbomType("identify");
+            scannerBuilder.sbomType(this.SBOM_IDENTIFY);
             scannerBuilder.sbom(loadFileToString(this.sbomIdentify));
-            scannerBuilder.scanFlags("512");
+            scannerBuilder.scanFlags(this.FLAG_ENGINE_HIDE_IDENTIFIED_FILES);
         }
 
 
@@ -123,6 +132,12 @@ public class ScanOSSScanner {
             LOGGER.debug("[SCANOSS] {}", this.customCertChain);
             scannerBuilder = scannerBuilder.customCert(this.customCertChain);
         }
+
+
+        if(this.isHpsmEnabled && (!this.apiToken.isEmpty())){
+            scannerBuilder.hpsm(true);
+        }
+
         return scannerBuilder.build();
     }
 }

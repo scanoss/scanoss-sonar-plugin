@@ -21,7 +21,7 @@
   /**
    * SCANOSS API URL Configuration default value
    */
-  public static final String SCANOSS_API_URL_DEFAULT_VALUE = "https://api.osskb.org/scan/direct";
+  public static final String SCANOSS_API_URL_DEFAULT_VALUE = "https://api.osskb.org";
 
   /**
    * SCANOSS API Token Configuration key
@@ -71,6 +71,17 @@
 
 
   /**
+   * SCANOSS HPSM  Configuration key
+   */
+  public static final String SCANOSS_HPSM_KEY = "sonar.scanoss.hpsm";
+
+  /**
+   * SCANOSS HPSM
+   */
+  public static final String SCANOSS_HPSM_DEFAULT_VALUE = "false";
+
+
+  /**
    * Private constructor to allow only statics
    */
   private ScanOSSProperties() {
@@ -88,7 +99,7 @@
             .defaultValue(String.valueOf(false))
             .category("SCANOSS")
             .name("Enable SCANOSS")
-            .description("Enable or disable SCANOSS plugin")
+            .description("Enable or disable SCANOSS plugin.")
             .onQualifiers(Qualifiers.PROJECT)
             .index(0)
             .build();
@@ -97,7 +108,7 @@
             .defaultValue(SCANOSS_API_URL_DEFAULT_VALUE)
             .category("SCANOSS")
             .name("Scan API URL")
-            .description("Scan API Endpoint with format \"http(s)://host:ip/scan/direct\". The --apiurl argument is used to pass it to the CLI.")
+            .description("SCANOSS API Endpoint with format \"http(s)://host:ip\".")
             .onQualifiers(Qualifiers.PROJECT)
             .index(1)
             .build();
@@ -106,7 +117,7 @@
             .defaultValue(SCANOSS_API_TOKEN_DEFAULT_VALUE)
             .category("SCANOSS")
             .name("Scan API Token")
-            .description("Scan API token. The --key argument is used to pass it to the CLI.")
+            .description("SCANOSS API token.")
             .onQualifiers(Qualifiers.PROJECT)
             .index(2)
             .build();
@@ -125,7 +136,7 @@
             .defaultValue(SCANOSS_SBOM_IDENTIFY_DEFAULT_VALUE)
             .category("SCANOSS")
             .name("SCANOSS SBOM IDENTIFY")
-            .description("SCANOSS SBOM identify filename")
+            .description("SCANOSS SBOM identify filename.")
             .onQualifiers(Qualifiers.PROJECT)
             .index(4)
             .build();
@@ -134,9 +145,19 @@
             .defaultValue(SCANOSS_SBOM_IGNORE_DEFAULT_VALUE)
             .category("SCANOSS")
             .name("SCANOSS SBOM IGNORE")
-            .description("SCANOSS SBOM ignore filename")
+            .description("SCANOSS SBOM ignore filename.")
             .onQualifiers(Qualifiers.PROJECT)
             .index(5)
+            .build();
+    PropertyDefinition hpsm = PropertyDefinition.builder(SCANOSS_HPSM_KEY)
+            .multiValues(false)
+            .defaultValue(SCANOSS_HPSM_DEFAULT_VALUE)
+            .category("SCANOSS")
+            .name("SCANOSS HPSM")
+            .description("Use High Precision Snippet Matching algorithm (Only available with premium subscription).")
+            .type(PropertyType.BOOLEAN)
+            .onQualifiers(Qualifiers.PROJECT)
+            .index(6)
             .build();
 
     return asList(
@@ -145,7 +166,8 @@
             apiToken,
             customCertChain,
             sbomIdentify,
-            sbomIgnore
+            sbomIgnore,
+            hpsm
     );
   }
 
