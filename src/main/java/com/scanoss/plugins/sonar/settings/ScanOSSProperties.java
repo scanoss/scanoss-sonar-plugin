@@ -114,6 +114,7 @@
             .build();
     PropertyDefinition apiToken = PropertyDefinition.builder(SCANOSS_API_TOKEN_KEY)
             .multiValues(false)
+            .type(PropertyType.PASSWORD)
             .defaultValue(SCANOSS_API_TOKEN_DEFAULT_VALUE)
             .category("SCANOSS")
             .name("Scan API Token")
