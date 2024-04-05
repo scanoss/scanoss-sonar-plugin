@@ -12,7 +12,7 @@ import com.scanoss.dto.*;
 import com.scanoss.plugins.sonar.analyzers.ScanOSSAnalyzer;
 import com.scanoss.plugins.sonar.measures.processors.*;
 import com.scanoss.plugins.sonar.model.*;
-import com.scanoss.plugins.sonar.rules.ScanossRuleDefinition;
+import com.scanoss.plugins.sonar.rules.ScanOSSRuleDefinitions;
 import com.scanoss.plugins.sonar.settings.ScanOSSProperties;
 import org.sonar.api.batch.fs.FilePredicates;
 import org.sonar.api.batch.fs.InputFile;
@@ -42,7 +42,7 @@ public class ScanOSSSensor implements Sensor {
     /**
      * Available measure processors
      */
-    private final MeasureProcessor[] processors;
+    private final ArrayList<MeasureProcessor> processors;
 
     /**
      * The configuration object for the connection details.
@@ -63,12 +63,17 @@ public class ScanOSSSensor implements Sensor {
     public ScanOSSSensor(FileSystem fileSystem, Configuration config) {
         this.fileSystem = fileSystem;
         this.config = config;
-        this.processors = new MeasureProcessor[]{
-                new LicenseDetailsProcessor(),
-                new CopyrightDetailsProcessor(),
-                new VulnerabilityDetailsProcessor(),
-                new UndeclaredComponentProcessor(!(getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IDENTIFY).isEmpty())),
-        };
+        this.processors = new ArrayList<MeasureProcessor>(){{
+            add(new LicenseDetailsProcessor());
+            add(new CopyrightDetailsProcessor());
+            add(new VulnerabilityDetailsProcessor());
+        }};
+
+        // Only add UndeclaredComponentProcessor if SBOM-identify.json file exists
+        if(!(getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IDENTIFY).isEmpty())){
+            this.processors.add(new UndeclaredComponentProcessor());
+        }
+
     }
 
     /**
@@ -79,7 +84,7 @@ public class ScanOSSSensor implements Sensor {
     public void describe(SensorDescriptor sensorDescriptor) {
         sensorDescriptor.name("Scan with SCANOSS");
 
-        sensorDescriptor.createIssuesForRuleRepositories(ScanossRuleDefinition.REPOSITORY);
+        sensorDescriptor.createIssuesForRuleRepositories(ScanOSSRuleDefinitions.REPOSITORY);
     }
 
     /**
@@ -106,9 +111,10 @@ public class ScanOSSSensor implements Sensor {
         String customCertChain = getStringConfigValue(ScanOSSProperties.SCANOSS_CUSTOM_CERT_CHAIN_KEY);
         String sbomIdentify = getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IDENTIFY);
         String sbomIgnore = getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IGNORE);
+        Boolean isHpsmEnabled = getBooleanConfigValue(ScanOSSProperties.SCANOSS_HPSM_KEY);
 
 
-        ScanOSSAnalyzer analyzer = new ScanOSSAnalyzer(rootDir, url, token, customCertChain, sbomIdentify, sbomIgnore);
+        ScanOSSAnalyzer analyzer = new ScanOSSAnalyzer(rootDir, url, token, customCertChain, sbomIdentify, sbomIgnore, isHpsmEnabled);
         ScanResult projectScanResult;
 
         try {

@@ -13,8 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 
 ## [0.5.0] - 2024-04-01
 ### Added
-- Upgrade to scanoss.java 0.6.1
+- Upgrade scanoss.java  version to 0.7.0
 - Add SBOM ingestion
+- Add High Precision Snippet Matching algorithm(HPSM)
+- Add undeclared component detection
 
 ## [0.4.4] - 2023-10-25
 ### Added
