@@ -2,7 +2,7 @@ package com.scanoss.plugins.sonar;
 
 import com.scanoss.plugins.sonar.measures.*;
 import com.scanoss.plugins.sonar.measures.processors.UndeclaredComponentProcessor;
-import com.scanoss.plugins.sonar.rules.ScanOSSRuleDefinitions;
+import com.scanoss.plugins.sonar.rules.ScanOSSRuleDefinitionBuilder;
 import com.scanoss.plugins.sonar.settings.ScanOSSProperties;
 import org.sonar.api.Plugin;
 
@@ -30,7 +30,7 @@ public class ScanOSSPlugin implements Plugin {
         //context.addExtension(ComputeScoreAverage.class);
 
 
-        context.addExtensions(ScanOSSRuleDefinitions.class, UndeclaredComponentProcessor.class);
+        context.addExtensions(ScanOSSRuleDefinitionBuilder.class, UndeclaredComponentProcessor.class);
     }
 
 }

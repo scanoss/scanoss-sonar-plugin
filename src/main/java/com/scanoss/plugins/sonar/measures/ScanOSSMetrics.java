@@ -9,8 +9,6 @@ import org.sonar.api.measures.Metrics;
 /**
  * IDE Metadata plugin metrics definition.
  *
- * @author scanoss-ap
- * @version 1.0
  */
 public class ScanOSSMetrics implements Metrics {
 
