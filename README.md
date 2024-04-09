@@ -17,7 +17,7 @@ SonarQube Plugin leveraging the SCANOSS Java SDK to perform scans, compatible wi
 ### Reported Issues
 * Undeclared Components
 
-NOTE: Some of the example information may require a SCANOSS Premium subscription. 
+**NOTE**: Some information may require a SCANOSS Premium subscription. 
 
 ## Building
 
@@ -31,15 +31,37 @@ The JAR will be deployed to `target/scanoss-sonar-plugin-VERSION.jar`. Copy this
 
 ## How to use
 
-Once the plugin has been copied in SonarQube, restart Sonar and proceed to configure the SCANOSS plugin as needed.
+Once the plugin has been copied into SonarQube, restart Sonar and proceed to configure the SCANOSS plugin as needed.
 
-Configuration options:
+### Configuration options:
 - **Scan API URL** : SCANOSS API Endpoint with format "http(s)://host:ip".
 - **Scan API Token**: SCANOSS API token.
 - **Custom Certificate Chain**: The custom certificate chain pem value.
-- **SCANOSS SBOM IDENTIFY**: SCANOSS SBOM identify filename.
-- **SCANOSS SBOM IGNORE**: SCANOSS SBOM ignore filename.
+- **SCANOSS SBOM IDENTIFY**: SCANOSS SBOM identify filename. Default: ***blank*** (disabled).
+- **SCANOSS SBOM IGNORE**: SCANOSS SBOM ignore filename. Default: ***blank*** (disabled).
 - **SCANOSS HPSM**: Use High Precision Snippet Matching algorithm (Only available with premium subscription).
+
+
+**NOTE**: SBOM IDENTIFY and SBOM IGNORE are mutually exclusive, and only property SBOM IDENTIFY will be considered if both are set. 
+
+### Issues Reporting
+
+The plugin identifies Undeclared Components that are not listed in the SBOM IDENTIFY file.
+
+To activate this feature, ensure that you have configured the SBOM IDENTIFY file and set up the following Quality Profile.
+
+#### Setting Up Quality Profile
+1. Navigate to the Quality Profile tab.
+2. In the desired language section, create a new profile named "SCANOSS Way".
+3. Within the "SCANOSS Way" profile, include a new activity.
+4. Search for the "Undeclared Component" activity in the SCANOSS Analyser repository.
+5. Activate the "Undeclared Component" activity to add it to the "SCANOSS Way" profile.
+
+#### Setting Up Project Quality Profile or issues
+1. Navigate to your project.
+2. Click on Project Settings and select Quality Profiles option.
+3. Click on "Add language".
+4. Choose "text" language and select "SCANOSS Way" profile.
 
 ### Running
 
