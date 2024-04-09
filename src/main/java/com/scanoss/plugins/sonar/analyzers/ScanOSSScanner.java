@@ -27,6 +27,7 @@ import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
@@ -105,7 +106,7 @@ public class ScanOSSScanner {
      */
     public List<String> runScan(String basePath, List<String> files) throws RuntimeException {
         LOGGER.info("[SCANOSS] Scanning {} files from {} ...", files.size(), basePath);
-        Scanner scanner = this.buildScanner();
+        Scanner scanner = this.buildScanner(basePath);
         List<String> output = scanner.scanFileList(basePath, files);
         LOGGER.info("[SCANOSS] Scan finished");
         if (LOGGER.isDebugEnabled()) {
@@ -135,19 +136,18 @@ public class ScanOSSScanner {
      * Builds a SCANOSS scanner instance with credentials and certificates in place
      * @return SCANOSS Scanner instance
      */
-    private Scanner buildScanner(){
+    private Scanner buildScanner(String basePath){
         Scanner.ScannerBuilder scannerBuilder = Scanner.builder().url(this.apiUrl + "/scan/direct" ).apiKey(this.apiToken);
         if(this.sbomIgnore != null && !this.sbomIgnore.isEmpty()){
             scannerBuilder.sbomType(this.SBOM_BLACKLIST);
-            scannerBuilder.sbom(loadFileToString(this.sbomIgnore));
+            scannerBuilder.sbom(loadFileToString(Path.of(basePath, this.sbomIgnore).toString()));
         }
 
         if(this.sbomIdentify !=null && !this.sbomIdentify.isEmpty()){
             scannerBuilder.sbomType(this.SBOM_IDENTIFY);
-            scannerBuilder.sbom(loadFileToString(this.sbomIdentify));
+            scannerBuilder.sbom(loadFileToString(Path.of(basePath ,this.sbomIdentify).toString()));
             scannerBuilder.scanFlags(this.FLAG_ENGINE_HIDE_IDENTIFIED_FILES);
         }
-
 
         if(this.customCertChain != null && !this.customCertChain.isEmpty()) {
             LOGGER.info("[SCANOSS] Setting custom certificate chain");
