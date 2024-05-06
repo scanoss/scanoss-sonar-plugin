@@ -63,6 +63,7 @@ To activate this feature, ensure that you have configured the SBOM IDENTIFY file
 3. Click on "Add language".
 4. Choose "text" language and select "SCANOSS Way" profile.
 
+
 ### Running
 
 To run a scan, execute the following command:
@@ -80,3 +81,32 @@ docker run \
     -v "$(pwd):/usr/src" \
     sonarsource/sonar-scanner-cli -Dsonar.java.binaries=target    
 ```
+
+
+
+# Extracting SCANOSS data from Sonar Web API
+
+## API Requirements:
+Access to the Sonar Web API requires a user-type token. Refer to the SonarQube API documentation https://next.sonarqube.com/sonarqube/web_api.
+
+
+## Authorization:
+Following header in your request is required:
+Authorization: Bearer [TOKEN]
+
+## Metrics API
+
+- ### List metrics
+  This endpoint lists all available metrics and can be filtered to find all SCANOSS metrics
+
+       https://{SONARQUBE_URL}/api/metrics/search?ps=500
+
+- ### Show metric
+  This endpoint shows details of the given metrics
+
+       https://{SONARQUBE_URL}/api/measures/component?component=integration-sonarqube&metricKeys=copyleft_license_count,copyright_count,vulnerability_count 
+
+- ### Issues API
+    This endpoint allows searching of created issues given a Rule ID
+    
+      https://{SONARQUBE_URL}/api/issues/search?rules=SCANOSS:UndeclaredComponent
