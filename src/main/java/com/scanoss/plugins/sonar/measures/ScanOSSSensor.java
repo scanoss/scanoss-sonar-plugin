@@ -92,6 +92,7 @@ public class ScanOSSSensor implements Sensor {
         // Only add UndeclaredComponentProcessor if SBOM-identify.json file exists
         if(!(getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IDENTIFY).isEmpty())){
             this.processors.add(new UndeclaredComponentProcessor());
+
         }
 
     }
@@ -103,9 +104,8 @@ public class ScanOSSSensor implements Sensor {
     @Override
     public void describe(SensorDescriptor sensorDescriptor) {
         sensorDescriptor.name("Scan with SCANOSS");
-
-        sensorDescriptor.createIssuesForRuleRepositories(ScanOSSRuleDefinitionBuilder.REPOSITORY);
     }
+
 
     /**
      * Sensor's main function. Collects project's files, runs the scan and processes output
