@@ -132,9 +132,12 @@ public class ScanOSSSensor implements Sensor {
         String sbomIdentify = getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IDENTIFY);
         String sbomIgnore = getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IGNORE);
         Boolean isHpsmEnabled = getBooleanConfigValue(ScanOSSProperties.SCANOSS_HPSM_KEY);
+        Boolean isScanossSettingEnabled = getBooleanConfigValue(ScanOSSProperties.SCANOSS_SETTINGS);
+        String scanossSettingsFilePath = getStringConfigValue(ScanOSSProperties.SCANOSS_SETTINGS_FILE_PATH);
 
 
-        ScanOSSAnalyzer analyzer = new ScanOSSAnalyzer(rootDir, url, token, customCertChain, sbomIdentify, sbomIgnore, isHpsmEnabled);
+        ScanOSSAnalyzer analyzer = new ScanOSSAnalyzer(rootDir, url, token, customCertChain, sbomIdentify,
+                sbomIgnore, isHpsmEnabled,isScanossSettingEnabled, scanossSettingsFilePath);
         ScanResult projectScanResult;
 
         try {

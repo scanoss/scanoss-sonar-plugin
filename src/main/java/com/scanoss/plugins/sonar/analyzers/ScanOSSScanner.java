@@ -83,18 +83,30 @@ public class ScanOSSScanner {
     private final Boolean isHpsmEnabled ;
 
     /**
+     * SCANOSS SETTINGS
+     */
+    private final Boolean isScanossSettingsEnabled;
+
+    private final String scanossSettingsFilePath;
+
+
+    /**
      * ScanOSSScanner Constructor
      * @param apiUrl Scan API Url
      * @param apiToken Scan API Token
      * @param customCertChain Custom Certificate Chain PEM
      */
-    public ScanOSSScanner(String apiUrl, String apiToken, String customCertChain, String sbomIdentify, String sbomIgnore, Boolean isHpsmEnabled){
+    public ScanOSSScanner(String apiUrl, String apiToken, String customCertChain, String sbomIdentify,
+                          String sbomIgnore, Boolean isHpsmEnabled,
+                          Boolean isScanossSettingsEnabled, String scanossSettingsFilePath) {
         this.apiUrl = apiUrl;
         this.apiToken = apiToken;
         this.customCertChain = customCertChain;
         this.sbomIdentify = sbomIdentify;
         this.sbomIgnore = sbomIgnore;
         this.isHpsmEnabled = isHpsmEnabled;
+        this.isScanossSettingsEnabled = isScanossSettingsEnabled;
+        this.scanossSettingsFilePath = scanossSettingsFilePath;
     }
 
     /**
@@ -138,6 +150,10 @@ public class ScanOSSScanner {
      */
     private Scanner buildScanner(String basePath){
         Scanner.ScannerBuilder scannerBuilder = Scanner.builder().url(this.apiUrl + "/scan/direct" ).apiKey(this.apiToken);
+
+        LOGGER.info("[SCANOSS] Settings Enabled: {}", this.isScanossSettingsEnabled);
+        LOGGER.info("[SCANOSS] Settings File Path: {}", this.scanossSettingsFilePath);
+
         if(this.sbomIgnore != null && !this.sbomIgnore.isEmpty()){
             scannerBuilder.sbomType(this.SBOM_BLACKLIST);
             scannerBuilder.sbom(loadFileToString(Path.of(basePath, this.sbomIgnore).toString()));

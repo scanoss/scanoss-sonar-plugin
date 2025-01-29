@@ -102,6 +102,17 @@ import org.sonar.api.PropertyType;
    */
   public static final String SCANOSS_HPSM_DEFAULT_VALUE = "false";
 
+  /**
+   * SCANOSS SETTINGS
+   */
+  public static final String SCANOSS_SETTINGS = "sonar.scanoss.scan.settings";
+
+  public static final String SCANOSS_SETTINGS_DEFAULT_VALUE = "true";
+
+  public static final String SCANOSS_SETTINGS_FILE_PATH = "sonar.scanoss.scan.settings.filepath";
+
+  public static final String SCANOSS_SETTINGS_FILE_PATH_DEFAULT_VALUE = "scanoss.json";
+
 
   /**
    * Private constructor to allow only statics
@@ -182,6 +193,26 @@ import org.sonar.api.PropertyType;
             .onQualifiers(Qualifiers.PROJECT)
             .index(6)
             .build();
+    PropertyDefinition scanossSettings = PropertyDefinition.builder(SCANOSS_SETTINGS)
+            .multiValues(false)
+            .defaultValue(SCANOSS_SETTINGS_DEFAULT_VALUE)
+            .category("SCANOSS")
+            .name("SCANOSS SETTINGS")
+            .description("Settings file to use for scanning")
+            .type(PropertyType.BOOLEAN)
+            .onQualifiers(Qualifiers.PROJECT)
+            .index(7)
+            .build();
+    PropertyDefinition scanossSettingsFilePath = PropertyDefinition.builder(SCANOSS_SETTINGS_FILE_PATH)
+            .multiValues(false)
+            .defaultValue(SCANOSS_SETTINGS_FILE_PATH_DEFAULT_VALUE)
+            .category("SCANOSS")
+            .name("SCANOSS SETTINGS FILE PATH")
+            .description("Filepath of the SCANOSS settings to be used for scanning")
+            .type(PropertyType.STRING)
+            .onQualifiers(Qualifiers.PROJECT)
+            .index(8)
+            .build();
 
     return asList(
             isEnabled,
@@ -190,7 +221,9 @@ import org.sonar.api.PropertyType;
             customCertChain,
             sbomIdentify,
             sbomIgnore,
-            hpsm
+            hpsm,
+            scanossSettings,
+            scanossSettingsFilePath
     );
   }
 
