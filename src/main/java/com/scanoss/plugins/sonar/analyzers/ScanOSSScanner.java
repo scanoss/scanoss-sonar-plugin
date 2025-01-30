@@ -23,6 +23,7 @@
 package com.scanoss.plugins.sonar.analyzers;
 
 import com.scanoss.Scanner;
+import com.scanoss.settings.Settings;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import java.io.File;
@@ -151,9 +152,6 @@ public class ScanOSSScanner {
     private Scanner buildScanner(String basePath){
         Scanner.ScannerBuilder scannerBuilder = Scanner.builder().url(this.apiUrl + "/scan/direct" ).apiKey(this.apiToken);
 
-        LOGGER.info("[SCANOSS] Settings Enabled: {}", this.isScanossSettingsEnabled);
-        LOGGER.info("[SCANOSS] Settings File Path: {}", this.scanossSettingsFilePath);
-
         if(this.sbomIgnore != null && !this.sbomIgnore.isEmpty()){
             scannerBuilder.sbomType(this.SBOM_BLACKLIST);
             scannerBuilder.sbom(loadFileToString(Path.of(basePath, this.sbomIgnore).toString()));
@@ -163,6 +161,12 @@ public class ScanOSSScanner {
             scannerBuilder.sbomType(this.SBOM_IDENTIFY);
             scannerBuilder.sbom(loadFileToString(Path.of(basePath ,this.sbomIdentify).toString()));
             scannerBuilder.scanFlags(this.FLAG_ENGINE_HIDE_IDENTIFIED_FILES);
+        }
+
+        LOGGER.info("[SCANOSS] Settings Enabled: {}", this.isScanossSettingsEnabled);
+        LOGGER.info("[SCANOSS] Settings File Path: {}", this.scanossSettingsFilePath);
+        if(this.isScanossSettingsEnabled){
+            scannerBuilder.settings(Settings.createFromPath(Path.of(basePath, this.scanossSettingsFilePath)));
         }
 
         if(this.customCertChain != null && !this.customCertChain.isEmpty()) {
