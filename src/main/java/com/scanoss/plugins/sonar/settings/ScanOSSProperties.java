@@ -185,5 +185,4 @@ import org.sonar.api.PropertyType;
             scanossSettingsFilePath
     );
   }
-
 }

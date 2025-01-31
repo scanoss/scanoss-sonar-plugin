@@ -87,13 +87,8 @@ public class ScanOSSSensor implements Sensor {
             add(new LicenseDetailsProcessor());
             add(new CopyrightDetailsProcessor());
             add(new VulnerabilityDetailsProcessor());
+            add(new UndeclaredComponentProcessor());
         }};
-
-        // Only add UndeclaredComponentProcessor if SBOM-identify.json file exists
-        if(!(getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IDENTIFY).isEmpty())){
-            this.processors.add(new UndeclaredComponentProcessor());
-        }
-
     }
 
     /**
@@ -134,8 +129,7 @@ public class ScanOSSSensor implements Sensor {
         String scanossSettingsFilePath = getStringConfigValue(ScanOSSProperties.SCANOSS_SETTINGS_FILE_PATH);
 
 
-        ScanOSSAnalyzer analyzer = new ScanOSSAnalyzer(rootDir, url, token, customCertChain, sbomIdentify,
-                sbomIgnore, isHpsmEnabled,isScanossSettingEnabled, scanossSettingsFilePath);
+        ScanOSSAnalyzer analyzer = new ScanOSSAnalyzer(rootDir, url, token, customCertChain, isHpsmEnabled,isScanossSettingEnabled, scanossSettingsFilePath);
         ScanResult projectScanResult;
 
         try {

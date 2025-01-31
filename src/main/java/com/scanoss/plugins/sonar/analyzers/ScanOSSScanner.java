@@ -32,6 +32,8 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.scanoss.plugins.sonar.settings.ScanOSSProperties.SCANOSS_SETTINGS_FILE_PATH_DEFAULT_VALUE;
+
 /**
  * SCANOSS Scanner
  * <p>
@@ -131,10 +133,24 @@ public class ScanOSSScanner {
     private Scanner buildScanner(String basePath){
         Scanner.ScannerBuilder scannerBuilder = Scanner.builder().url(this.apiUrl + "/scan/direct" ).apiKey(this.apiToken);
 
-        LOGGER.info("[SCANOSS] Settings Enabled: {}", this.isScanossSettingsEnabled);
-        LOGGER.info("[SCANOSS] Settings File Path: {}", this.scanossSettingsFilePath);
+        LOGGER.info("[SCANOSS] SCANOSS Settings enabled: {}", this.isScanossSettingsEnabled);
         if(this.isScanossSettingsEnabled){
-            scannerBuilder.settings(Settings.createFromPath(Path.of(basePath, this.scanossSettingsFilePath)));
+            boolean isUsingCustomSettingPath =  !this.scanossSettingsFilePath.equals(SCANOSS_SETTINGS_FILE_PATH_DEFAULT_VALUE);
+            File f = new File(Path.of(basePath, this.scanossSettingsFilePath).toString());
+            boolean fileExists = f.exists();
+            // Check if user is using a different path as default. Throw exception in case the file not exists
+            if(isUsingCustomSettingPath && !fileExists){
+                throw new RuntimeException(String.format("SCANOSS settings file not found at: %s. Please provide a valid " +
+                        "SCANOSS settings file path.", this.scanossSettingsFilePath));
+            }
+
+            // Check if file path exists. Not throw error if user is not using the default path.
+            if(!fileExists){
+                LOGGER.warn("[SCANOSS] SCANOSS Settings file not found. Please add the scanoss.json file in your project's root directory");
+            }else{
+                LOGGER.info("[SCANOSS] SCANOSS Settings file found: {}", this.scanossSettingsFilePath);
+                scannerBuilder.settings(Settings.createFromPath(Path.of(basePath, this.scanossSettingsFilePath)));
+            }
         }
 
         if(this.customCertChain != null && !this.customCertChain.isEmpty()) {

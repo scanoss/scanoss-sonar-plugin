@@ -34,14 +34,14 @@ The JAR will be deployed to `target/scanoss-sonar-plugin-VERSION.jar`. Copy this
 Once the plugin has been copied into SonarQube, restart Sonar and proceed to configure the SCANOSS plugin as needed.
 
 ### Configuration options:
-| **Parameter**              | **Description**                                                                                                                                          | **Required** | **Default**                         | 
-|----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|-------------------------------------|
-| Scan API URL               | SCANOSS API Endpoint with format "http(s)://host:ip".                                                                                                    | Optional     | `https://api.osskb.org/scan/direct` |
-| Scan API Token             | SCANOSS API token.                                                                                                                                       | Optional     | -                                   |
-| Custom Certificate Chain   | The custom certificate chain pem value.                                                                                                                  | Optional     | -                                   |
-| SCANOSS HPSM               | Use High Precision Snippet Matching algorithm (Only available with premium subscription).                                                                | Optional     | `false`                             |
-| SCANOSS Settings           | Settings file to use for scanning. See the SCANOSS settings [documentation](https://scanoss.readthedocs.io/projects/scanoss-py/en/latest/#settings-file) | Optional     | `true`                              |
-| SCANOSS Settings File Path | Filepath of the SCANOSS settings to be used for scanning                                                                                                 | Optional     | `scanoss.json`                      |
+| **Parameter**              | **Description**                                                                                                                                          | **Required** | **Default**             | 
+|----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|-------------------------|
+| Scan API URL               | SCANOSS API Endpoint with format "http(s)://host:ip".                                                                                                    | Optional     | `https://api.osskb.org` |
+| Scan API Token             | SCANOSS API token.                                                                                                                                       | Optional     | -                       |
+| Custom Certificate Chain   | The custom certificate chain pem value.                                                                                                                  | Optional     | -                       |
+| SCANOSS HPSM               | Use High Precision Snippet Matching algorithm (Only available with premium subscription).                                                                | Optional     | `false`                 |
+| SCANOSS Settings           | Settings file to use for scanning. See the SCANOSS settings [documentation](https://scanoss.readthedocs.io/projects/scanoss-py/en/latest/#settings-file) | Optional     | `true`                  |
+| SCANOSS Settings File Path | Filepath of the SCANOSS settings to be used for scanning                                                                                                 | Optional     | `scanoss.json`          |
 
 
 

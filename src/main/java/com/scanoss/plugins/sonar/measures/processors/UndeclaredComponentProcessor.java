@@ -49,6 +49,7 @@ public class UndeclaredComponentProcessor implements MeasureProcessor {
 
         MatchType matchType = scanData.getMatchType();
 
+        //TODO: Check for 'identified' status also !scanData.getStatus.equals('identified')
         if(matchType != MatchType.none){
             NewIssue newIssue = sensorContext.newIssue()
                     .forRule(ScanOSSUndeclaredComponentRuleDefinition.ruleKey);
