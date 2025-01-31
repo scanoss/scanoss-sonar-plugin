@@ -72,27 +72,6 @@ import org.sonar.api.PropertyType;
 
 
   /**
-   * SCANOSS Identify
-   */
-  public static final String SCANOSS_SBOM_IDENTIFY = "sonar.scanoss.scan.sbom_identify";
-
-  /**
-   * SCANOSS Identify default value
-   */
-  public static final String SCANOSS_SBOM_IDENTIFY_DEFAULT_VALUE = "";
-
-  /**
-   * SCANOSS Ignore
-   * */
-  public static final String SCANOSS_SBOM_IGNORE = "sonar.scanoss.scan.sbom_ignore";
-
-  /**
-   * SCANOSS Ignore default value
-   */
-  public static final String SCANOSS_SBOM_IGNORE_DEFAULT_VALUE = "";
-
-
-  /**
    * SCANOSS HPSM  Configuration key
    */
   public static final String SCANOSS_HPSM_KEY = "sonar.scanoss.hpsm";
@@ -165,24 +144,6 @@ import org.sonar.api.PropertyType;
             .onQualifiers(Qualifiers.PROJECT)
             .index(3)
             .build();
-    PropertyDefinition sbomIdentify = PropertyDefinition.builder(SCANOSS_SBOM_IDENTIFY)
-            .multiValues(false)
-            .defaultValue(SCANOSS_SBOM_IDENTIFY_DEFAULT_VALUE)
-            .category("SCANOSS")
-            .name("SCANOSS SBOM IDENTIFY")
-            .description("SCANOSS SBOM identify filename.")
-            .onQualifiers(Qualifiers.PROJECT)
-            .index(4)
-            .build();
-    PropertyDefinition sbomIgnore = PropertyDefinition.builder(SCANOSS_SBOM_IGNORE)
-            .multiValues(false)
-            .defaultValue(SCANOSS_SBOM_IGNORE_DEFAULT_VALUE)
-            .category("SCANOSS")
-            .name("SCANOSS SBOM IGNORE")
-            .description("SCANOSS SBOM ignore filename.")
-            .onQualifiers(Qualifiers.PROJECT)
-            .index(5)
-            .build();
     PropertyDefinition hpsm = PropertyDefinition.builder(SCANOSS_HPSM_KEY)
             .multiValues(false)
             .defaultValue(SCANOSS_HPSM_DEFAULT_VALUE)
@@ -191,7 +152,7 @@ import org.sonar.api.PropertyType;
             .description("Use High Precision Snippet Matching algorithm (Only available with premium subscription).")
             .type(PropertyType.BOOLEAN)
             .onQualifiers(Qualifiers.PROJECT)
-            .index(6)
+            .index(4)
             .build();
     PropertyDefinition scanossSettings = PropertyDefinition.builder(SCANOSS_SETTINGS)
             .multiValues(false)
@@ -201,7 +162,7 @@ import org.sonar.api.PropertyType;
             .description("Settings file to use for scanning")
             .type(PropertyType.BOOLEAN)
             .onQualifiers(Qualifiers.PROJECT)
-            .index(7)
+            .index(5)
             .build();
     PropertyDefinition scanossSettingsFilePath = PropertyDefinition.builder(SCANOSS_SETTINGS_FILE_PATH)
             .multiValues(false)
@@ -211,7 +172,7 @@ import org.sonar.api.PropertyType;
             .description("Filepath of the SCANOSS settings to be used for scanning")
             .type(PropertyType.STRING)
             .onQualifiers(Qualifiers.PROJECT)
-            .index(8)
+            .index(6)
             .build();
 
     return asList(
@@ -219,8 +180,6 @@ import org.sonar.api.PropertyType;
             apiUrl,
             apiToken,
             customCertChain,
-            sbomIdentify,
-            sbomIgnore,
             hpsm,
             scanossSettings,
             scanossSettingsFilePath

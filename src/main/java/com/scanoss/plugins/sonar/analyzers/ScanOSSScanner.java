@@ -40,13 +40,6 @@ import java.util.List;
  */
 public class ScanOSSScanner {
 
-    private final String SBOM_BLACKLIST = "blacklist";
-
-    private final String SBOM_IDENTIFY = "identify";
-
-    private final String FLAG_ENGINE_HIDE_IDENTIFIED_FILES = "512";
-
-
     /**
      * The API Url
      */
@@ -68,17 +61,6 @@ public class ScanOSSScanner {
     private static final Logger LOGGER = Loggers.get(ScanOSSScanner.class);
 
     /**
-     * SBOM identify file name
-     */
-    private final String sbomIdentify;
-
-
-    /**
-     * SBOM identify file name
-     */
-    private final String sbomIgnore;
-
-    /**
      * HPSM option
      */
     private final Boolean isHpsmEnabled ;
@@ -97,14 +79,11 @@ public class ScanOSSScanner {
      * @param apiToken Scan API Token
      * @param customCertChain Custom Certificate Chain PEM
      */
-    public ScanOSSScanner(String apiUrl, String apiToken, String customCertChain, String sbomIdentify,
-                          String sbomIgnore, Boolean isHpsmEnabled,
+    public ScanOSSScanner(String apiUrl, String apiToken, String customCertChain, Boolean isHpsmEnabled,
                           Boolean isScanossSettingsEnabled, String scanossSettingsFilePath) {
         this.apiUrl = apiUrl;
         this.apiToken = apiToken;
         this.customCertChain = customCertChain;
-        this.sbomIdentify = sbomIdentify;
-        this.sbomIgnore = sbomIgnore;
         this.isHpsmEnabled = isHpsmEnabled;
         this.isScanossSettingsEnabled = isScanossSettingsEnabled;
         this.scanossSettingsFilePath = scanossSettingsFilePath;
@@ -151,17 +130,6 @@ public class ScanOSSScanner {
      */
     private Scanner buildScanner(String basePath){
         Scanner.ScannerBuilder scannerBuilder = Scanner.builder().url(this.apiUrl + "/scan/direct" ).apiKey(this.apiToken);
-
-        if(this.sbomIgnore != null && !this.sbomIgnore.isEmpty()){
-            scannerBuilder.sbomType(this.SBOM_BLACKLIST);
-            scannerBuilder.sbom(loadFileToString(Path.of(basePath, this.sbomIgnore).toString()));
-        }
-
-        if(this.sbomIdentify !=null && !this.sbomIdentify.isEmpty()){
-            scannerBuilder.sbomType(this.SBOM_IDENTIFY);
-            scannerBuilder.sbom(loadFileToString(Path.of(basePath ,this.sbomIdentify).toString()));
-            scannerBuilder.scanFlags(this.FLAG_ENGINE_HIDE_IDENTIFIED_FILES);
-        }
 
         LOGGER.info("[SCANOSS] Settings Enabled: {}", this.isScanossSettingsEnabled);
         LOGGER.info("[SCANOSS] Settings File Path: {}", this.scanossSettingsFilePath);

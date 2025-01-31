@@ -129,8 +129,6 @@ public class ScanOSSSensor implements Sensor {
         String url = getStringConfigValue(ScanOSSProperties.SCANOSS_API_URL_KEY);
         String token = getStringConfigValue(ScanOSSProperties.SCANOSS_API_TOKEN_KEY);
         String customCertChain = getStringConfigValue(ScanOSSProperties.SCANOSS_CUSTOM_CERT_CHAIN_KEY);
-        String sbomIdentify = getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IDENTIFY);
-        String sbomIgnore = getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IGNORE);
         Boolean isHpsmEnabled = getBooleanConfigValue(ScanOSSProperties.SCANOSS_HPSM_KEY);
         Boolean isScanossSettingEnabled = getBooleanConfigValue(ScanOSSProperties.SCANOSS_SETTINGS);
         String scanossSettingsFilePath = getStringConfigValue(ScanOSSProperties.SCANOSS_SETTINGS_FILE_PATH);
