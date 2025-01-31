@@ -3,6 +3,39 @@ SCANOSS SonarQube Custom Plugin
 
 SonarQube Plugin leveraging the SCANOSS Java SDK to perform scans, compatible with SonarQube 10.x.
 
+## Breaking change v1.0.1
+
+- Removed parameters:
+  - `identify.json`
+  - `ignore.json`
+
+### Converting from sbom.json to scanoss.json
+The SBOM configuration format has changed and the file name must be updated from **sbom.json** to **scanoss.json**. Here's how to convert your existing configuration:
+
+Old format (sbom.json):
+```json
+{
+  "components": [
+    {
+      "purl": "pkg:github/scanoss/scanner.c"
+    }
+  ]
+}
+```
+
+New format (scanoss.json):
+```json
+{
+  "bom": {
+    "include": [
+      {
+        "purl": "pkg:github/scanoss/scanner.c"
+      }
+    ]
+  }
+}
+```
+
 ## Features
 
 ### Capabilities
@@ -42,8 +75,6 @@ Once the plugin has been copied into SonarQube, restart Sonar and proceed to con
 | SCANOSS HPSM               | Use High Precision Snippet Matching algorithm (Only available with premium subscription).                                                                | Optional     | `false`                 |
 | SCANOSS Settings           | Settings file to use for scanning. See the SCANOSS settings [documentation](https://scanoss.readthedocs.io/projects/scanoss-py/en/latest/#settings-file) | Optional     | `true`                  |
 | SCANOSS Settings File Path | Filepath of the SCANOSS settings to be used for scanning                                                                                                 | Optional     | `scanoss.json`          |
-
-
 
 
 
