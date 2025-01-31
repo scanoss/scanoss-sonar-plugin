@@ -7,7 +7,7 @@ SonarQube Plugin leveraging the SCANOSS Java SDK to perform scans, compatible wi
 
 ### Capabilities
 * High Precision Snippet Matching (HPSM)
-* SBOM Ingestion
+* SCANOSS Settings Ingestion
 
 ### Reported metrics 
 * Copyleft License Count
@@ -34,15 +34,18 @@ The JAR will be deployed to `target/scanoss-sonar-plugin-VERSION.jar`. Copy this
 Once the plugin has been copied into SonarQube, restart Sonar and proceed to configure the SCANOSS plugin as needed.
 
 ### Configuration options:
-- **Scan API URL** : SCANOSS API Endpoint with format "http(s)://host:ip".
-- **Scan API Token**: SCANOSS API token.
-- **Custom Certificate Chain**: The custom certificate chain pem value.
-- **SCANOSS SBOM IDENTIFY**: SCANOSS SBOM identify filename. Default: ***blank*** (disabled).
-- **SCANOSS SBOM IGNORE**: SCANOSS SBOM ignore filename. Default: ***blank*** (disabled).
-- **SCANOSS HPSM**: Use High Precision Snippet Matching algorithm (Only available with premium subscription).
+| **Parameter**              | **Description**                                                                                                                                          | **Required** | **Default**                         | 
+|----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|-------------------------------------|
+| Scan API URL               | SCANOSS API Endpoint with format "http(s)://host:ip".                                                                                                    | Optional     | `https://api.osskb.org/scan/direct` |
+| Scan API Token             | SCANOSS API token.                                                                                                                                       | Optional     | -                                   |
+| Custom Certificate Chain   | The custom certificate chain pem value.                                                                                                                  | Optional     | -                                   |
+| SCANOSS HPSM               | Use High Precision Snippet Matching algorithm (Only available with premium subscription).                                                                | Optional     | `false`                             |
+| SCANOSS Settings           | Settings file to use for scanning. See the SCANOSS settings [documentation](https://scanoss.readthedocs.io/projects/scanoss-py/en/latest/#settings-file) | Optional     | `true`                              |
+| SCANOSS Settings File Path | Filepath of the SCANOSS settings to be used for scanning                                                                                                 | Optional     | `scanoss.json`                      |
 
 
-**NOTE**: SBOM IDENTIFY and SBOM IGNORE are mutually exclusive, and only property SBOM IDENTIFY will be considered if both are set. 
+
+
 
 ### Issues Reporting
 
