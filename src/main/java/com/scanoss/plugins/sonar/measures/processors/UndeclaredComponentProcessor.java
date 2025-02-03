@@ -24,6 +24,7 @@ package com.scanoss.plugins.sonar.measures.processors;
 
 import com.scanoss.dto.ScanFileDetails;
 import com.scanoss.dto.enums.MatchType;
+import com.scanoss.dto.enums.StatusType;
 import com.scanoss.plugins.sonar.rules.ScanOSSUndeclaredComponentRuleDefinition;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.SensorContext;
@@ -48,9 +49,7 @@ public class UndeclaredComponentProcessor implements MeasureProcessor {
         LOGGER.info("[SCANOSS] Undeclared component processor");
 
         MatchType matchType = scanData.getMatchType();
-
-        //TODO: Check for 'identified' status also !scanData.getStatus.equals('identified')
-        if(matchType != MatchType.none){
+        if(matchType != MatchType.none && (scanData.getStatus() != StatusType.identified)){
             NewIssue newIssue = sensorContext.newIssue()
                     .forRule(ScanOSSUndeclaredComponentRuleDefinition.ruleKey);
 
