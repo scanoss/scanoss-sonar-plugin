@@ -80,9 +80,9 @@ Once the plugin has been copied into SonarQube, restart Sonar and proceed to con
 
 ### Issues Reporting
 
-The plugin identifies Undeclared Components that are not listed in the SBOM IDENTIFY file.
+The plugin identifies Undeclared Components that are not listed in the SCANOSS settings file.
 
-To activate this feature, ensure that you have configured the SBOM IDENTIFY file and set up the following Quality Profile.
+To activate this feature, ensure that you have configured the SCANOSS Settings file and set up the following Quality Profile.
 
 #### Setting Up Quality Profile
 1. Navigate to the Quality Profile tab.
