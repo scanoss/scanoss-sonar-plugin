@@ -23,7 +23,7 @@
 package com.scanoss.plugins.sonar.analyzers;
 
 import com.scanoss.Scanner;
-import com.scanoss.settings.Settings;
+import com.scanoss.settings.ScanossSettings;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import java.io.File;
@@ -149,7 +149,7 @@ public class ScanOSSScanner {
                 LOGGER.warn("[SCANOSS] SCANOSS Settings file not found. Please add the scanoss.json file in your project's root directory");
             }else{
                 LOGGER.info("[SCANOSS] SCANOSS Settings file found: {}", this.scanossSettingsFilePath);
-                scannerBuilder.settings(Settings.createFromPath(Path.of(basePath, this.scanossSettingsFilePath)));
+                scannerBuilder.settings(ScanossSettings.createFromPath(Path.of(basePath, this.scanossSettingsFilePath)));
             }
         }
 
