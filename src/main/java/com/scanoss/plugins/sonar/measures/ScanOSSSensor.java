@@ -87,13 +87,8 @@ public class ScanOSSSensor implements Sensor {
             add(new LicenseDetailsProcessor());
             add(new CopyrightDetailsProcessor());
             add(new VulnerabilityDetailsProcessor());
+            add(new UndeclaredComponentProcessor());
         }};
-
-        // Only add UndeclaredComponentProcessor if SBOM-identify.json file exists
-        if(!(getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IDENTIFY).isEmpty())){
-            this.processors.add(new UndeclaredComponentProcessor());
-        }
-
     }
 
     /**
@@ -129,12 +124,12 @@ public class ScanOSSSensor implements Sensor {
         String url = getStringConfigValue(ScanOSSProperties.SCANOSS_API_URL_KEY);
         String token = getStringConfigValue(ScanOSSProperties.SCANOSS_API_TOKEN_KEY);
         String customCertChain = getStringConfigValue(ScanOSSProperties.SCANOSS_CUSTOM_CERT_CHAIN_KEY);
-        String sbomIdentify = getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IDENTIFY);
-        String sbomIgnore = getStringConfigValue(ScanOSSProperties.SCANOSS_SBOM_IGNORE);
         Boolean isHpsmEnabled = getBooleanConfigValue(ScanOSSProperties.SCANOSS_HPSM_KEY);
+        Boolean isScanossSettingEnabled = getBooleanConfigValue(ScanOSSProperties.SCANOSS_SETTINGS);
+        String scanossSettingsFilePath = getStringConfigValue(ScanOSSProperties.SCANOSS_SETTINGS_FILE_PATH);
 
 
-        ScanOSSAnalyzer analyzer = new ScanOSSAnalyzer(rootDir, url, token, customCertChain, sbomIdentify, sbomIgnore, isHpsmEnabled);
+        ScanOSSAnalyzer analyzer = new ScanOSSAnalyzer(rootDir, url, token, customCertChain, isHpsmEnabled,isScanossSettingEnabled, scanossSettingsFilePath);
         ScanResult projectScanResult;
 
         try {

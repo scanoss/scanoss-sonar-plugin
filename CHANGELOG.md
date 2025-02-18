@@ -10,7 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Upcoming changes...
-- 
+
+## [1.0.1] - 2025-02-18
+### Added
+- Add SCANOSS settings ingestion 
+- Upgrade scanoss.java to v0.10.0
+- Upgrade documentation
+- Change default SCANOSS API URL to https://api.osskb.org
+### Removed
+- Remove identify.json and ignore.json support
+
+
 ## [0.5.0] - 2024-04-01
 ### Added
 - Upgrade scanoss.java  version to 0.7.0
@@ -56,3 +66,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.4.3]: https://github.com/scanoss/scanoss-sonar-example-plugin/compare/v0.4.2...v0.4.3
 [0.4.4]: https://github.com/scanoss/scanoss-sonar-example-plugin/compare/v0.4.3...v0.4.4
 [0.5.0]: https://github.com/scanoss/scanoss-sonar-example-plugin/compare/v0.4.4...v0.5.0
+[1.0.1]: https://github.com/scanoss/scanoss-sonar-example-plugin/compare/v0.5.0...v1.0.1

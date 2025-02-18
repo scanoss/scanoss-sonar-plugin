@@ -40,12 +40,13 @@ public class ScanOSSUndeclaredComponentRuleDefinition extends RuleBaseDefinition
     public static final String description = "Detects undeclared OSS components in source code";
     public static final RuleKey ruleKey = RuleKey.of(ScanOSSRuleDefinitionBuilder.REPOSITORY, ScanOSSUndeclaredComponentRuleDefinition.rkey);
 
+
     /**
      * {@inheritDoc}
      */
     @Override
     public  RuleDescriptionSection getRootCauseSection() {
-        return this.descriptionSection(ROOT_CAUSE_SECTION_KEY, "The root cause of this issue is failure to declare components in the SBOM file.");
+        return this.descriptionSection(ROOT_CAUSE_SECTION_KEY, "The root cause is missing component declarations in the SCANOSS settings file.");
     }
 
     /**
@@ -53,7 +54,7 @@ public class ScanOSSUndeclaredComponentRuleDefinition extends RuleBaseDefinition
      */
     @Override
     public RuleDescriptionSection getHowToFix() {
-       return  descriptionSection(HOW_TO_FIX_SECTION_KEY,"To resolve this issue, ensure that the missing components are declared in the SBOM file at the root of this repo.");
+       return  descriptionSection(HOW_TO_FIX_SECTION_KEY,"To fix this issue, add the missing component declarations to your SCANOSS settings file at the repository root. For detailed instructions, please see the following <a href=https://scanoss.readthedocs.io/projects/scanoss-py/en/latest/#settings-file target=\"_blank\">documentation</a>");
     }
 
     /**
@@ -79,5 +80,6 @@ public class ScanOSSUndeclaredComponentRuleDefinition extends RuleBaseDefinition
     public String getDescription() {
         return ScanOSSUndeclaredComponentRuleDefinition.description;
     }
+
 
 }

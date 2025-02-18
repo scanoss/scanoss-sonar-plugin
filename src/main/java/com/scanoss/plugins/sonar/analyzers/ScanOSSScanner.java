@@ -23,6 +23,7 @@
 package com.scanoss.plugins.sonar.analyzers;
 
 import com.scanoss.Scanner;
+import com.scanoss.settings.ScanossSettings;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import java.io.File;
@@ -31,6 +32,8 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.scanoss.plugins.sonar.settings.ScanOSSProperties.SCANOSS_SETTINGS_FILE_PATH_DEFAULT_VALUE;
+
 /**
  * SCANOSS Scanner
  * <p>
@@ -38,13 +41,6 @@ import java.util.List;
  * </p>
  */
 public class ScanOSSScanner {
-
-    private final String SBOM_BLACKLIST = "blacklist";
-
-    private final String SBOM_IDENTIFY = "identify";
-
-    private final String FLAG_ENGINE_HIDE_IDENTIFIED_FILES = "512";
-
 
     /**
      * The API Url
@@ -67,20 +63,17 @@ public class ScanOSSScanner {
     private static final Logger LOGGER = Loggers.get(ScanOSSScanner.class);
 
     /**
-     * SBOM identify file name
-     */
-    private final String sbomIdentify;
-
-
-    /**
-     * SBOM identify file name
-     */
-    private final String sbomIgnore;
-
-    /**
      * HPSM option
      */
     private final Boolean isHpsmEnabled ;
+
+    /**
+     * SCANOSS SETTINGS
+     */
+    private final Boolean isScanossSettingsEnabled;
+
+    private final String scanossSettingsFilePath;
+
 
     /**
      * ScanOSSScanner Constructor
@@ -88,13 +81,14 @@ public class ScanOSSScanner {
      * @param apiToken Scan API Token
      * @param customCertChain Custom Certificate Chain PEM
      */
-    public ScanOSSScanner(String apiUrl, String apiToken, String customCertChain, String sbomIdentify, String sbomIgnore, Boolean isHpsmEnabled){
+    public ScanOSSScanner(String apiUrl, String apiToken, String customCertChain, Boolean isHpsmEnabled,
+                          Boolean isScanossSettingsEnabled, String scanossSettingsFilePath) {
         this.apiUrl = apiUrl;
         this.apiToken = apiToken;
         this.customCertChain = customCertChain;
-        this.sbomIdentify = sbomIdentify;
-        this.sbomIgnore = sbomIgnore;
         this.isHpsmEnabled = isHpsmEnabled;
+        this.isScanossSettingsEnabled = isScanossSettingsEnabled;
+        this.scanossSettingsFilePath = scanossSettingsFilePath;
     }
 
     /**
@@ -138,15 +132,25 @@ public class ScanOSSScanner {
      */
     private Scanner buildScanner(String basePath){
         Scanner.ScannerBuilder scannerBuilder = Scanner.builder().url(this.apiUrl + "/scan/direct" ).apiKey(this.apiToken);
-        if(this.sbomIgnore != null && !this.sbomIgnore.isEmpty()){
-            scannerBuilder.sbomType(this.SBOM_BLACKLIST);
-            scannerBuilder.sbom(loadFileToString(Path.of(basePath, this.sbomIgnore).toString()));
-        }
 
-        if(this.sbomIdentify !=null && !this.sbomIdentify.isEmpty()){
-            scannerBuilder.sbomType(this.SBOM_IDENTIFY);
-            scannerBuilder.sbom(loadFileToString(Path.of(basePath ,this.sbomIdentify).toString()));
-            scannerBuilder.scanFlags(this.FLAG_ENGINE_HIDE_IDENTIFIED_FILES);
+        LOGGER.info("[SCANOSS] SCANOSS Settings enabled: {}", this.isScanossSettingsEnabled);
+        if(this.isScanossSettingsEnabled){
+            boolean isUsingCustomSettingPath =  !this.scanossSettingsFilePath.equals(SCANOSS_SETTINGS_FILE_PATH_DEFAULT_VALUE);
+            File f = new File(Path.of(basePath, this.scanossSettingsFilePath).toString());
+            boolean fileExists = f.exists();
+            // Check if user is using a different path as default. Throw exception in case the file not exists
+            if(isUsingCustomSettingPath && !fileExists){
+                throw new RuntimeException(String.format("SCANOSS settings file not found at: %s. Please provide a valid " +
+                        "SCANOSS settings file path.", this.scanossSettingsFilePath));
+            }
+
+            // Check if file path exists. Not throw error if user is not using the default path.
+            if(!fileExists){
+                LOGGER.warn("[SCANOSS] SCANOSS Settings file not found. Please add the scanoss.json file in your project's root directory");
+            }else{
+                LOGGER.info("[SCANOSS] SCANOSS Settings file found: {}", this.scanossSettingsFilePath);
+                scannerBuilder.settings(ScanossSettings.createFromPath(Path.of(basePath, this.scanossSettingsFilePath)));
+            }
         }
 
         if(this.customCertChain != null && !this.customCertChain.isEmpty()) {
