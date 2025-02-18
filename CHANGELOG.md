@@ -11,10 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upcoming changes...
 
-## [1.0.1] - 2025-02-02
+## [1.0.1] - 2025-02-18
 ### Added
 - Add SCANOSS settings ingestion 
-- Upgrade scanoss.java to v0.9.0
+- Upgrade scanoss.java to v0.10.0
 - Upgrade documentation
 - Change default SCANOSS API URL to https://api.osskb.org
 ### Removed
